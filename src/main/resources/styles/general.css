@@ -1,0 +1,162 @@
+* {
+    color-background: white;
+    color-dark: #385e6b;
+    color-lite: #e1e6e8;
+    color-medium: #55727d;
+    color-accent: #059994;
+    color-error: #e02d19;
+    color-success: #0db826;
+
+    -fx-font-family: "Helvetica";
+    -fx-text-fill: color-dark;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-traversable: false;
+}
+
+/* --- BUTTON --- */
+.button {
+    -fx-font-weight: normal;
+    -fx-font-size: 14;
+    -fx-background-color: color-dark;
+    -fx-background-radius: 6;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
+}
+.button:hover {
+     -fx-background-color: color-medium;
+}
+.button:pressed {
+     -fx-background-color: color-accent;
+}
+
+/* --- CHOICE BOX --- */
+.choice-box {
+    -fx-background-color: color-dark;
+    -fx-mark-color: transparent;
+    -fx-focused-mark-color: transparent;
+}
+.choice-box .label {
+    -fx-text-fill: white;
+}
+.choice-box .context-menu {
+    -fx-background-radius: 4;
+    -fx-background-color: color-dark;
+}
+.choice-box .menu-item:focused {
+    -fx-background-radius: 4;
+    -fx-background-color: color-lite;
+}
+.choice-box .menu-item:focused > .label {
+    -fx-text-fill: color-dark;
+}
+
+/* --- HYPERLINK --- */
+.hyperlink {
+    -fx-font-size: 12;
+    -fx-underline: true;
+    -fx-text-fill: color-accent;
+}
+.hyperlink:pressed {
+    -fx-text-fill: color-medium;
+}
+
+/* --- SCROLL BAR --- */
+.scroll-bar .increment-button, .scroll-bar .decrement-button, .scroll-bar .track-background, .scroll-bar .track,
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+    visibility: hidden;
+}
+.scroll-bar {
+    -fx-padding: 2;
+    -fx-background-color: transparent;
+}
+.scroll-bar .thumb {
+    -fx-background-color: color-dark;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
+}
+.scroll-bar .thumb:hover {
+    -fx-background-color: color-medium;
+}
+.scroll-bar .thumb:pressed {
+    -fx-background-color: color-accent;
+}
+
+/* --- SCROLL PANE --- */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+/* --- SEPARATOR --- */
+.separator *.line {
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: color-lite;
+}
+
+/* --- SPLIT PANE --- */
+.split-pane {
+    -fx-background-color: color-background;
+}
+.split-pane:horizontal > .split-pane-divider, .split-pane:vertical > .split-pane-divider {
+    -fx-background-color: color-dark;
+    -fx-padding: 2;
+}
+
+/* --- --- --- STYLE CLASSES --- --- --- */
+
+.bold {
+    -fx-font-weight: bold;
+    -fx-background-color: transparent;
+}
+
+.cleanButton {
+    -fx-padding: 0;
+    -fx-font-weight: bold;
+    -fx-font-size: 18;
+    -fx-background-color: transparent;
+    -fx-background-radius: null;
+    -fx-text-fill: color-dark;
+    -fx-effect: null;
+}
+.cleanButton:hover {
+    -fx-text-fill: color-medium;
+    -fx-background-color: transparent;
+}
+.cleanButton:pressed {
+    -fx-text-fill: color-accent;
+    -fx-background-color: transparent;
+}
+
+.container {
+    -fx-padding: 8;
+    -fx-background-color: color-background;
+}
+
+.error {
+    -fx-text-fill: color-error;
+    -fx-font-size: 12;
+}
+
+.h1 {
+    -fx-font-size: 18;
+}
+
+.h2 {
+    -fx-font-size: 16;
+}
+
+.hint {
+    -fx-text-fill: color-medium;
+    -fx-font-size: 12;
+}
+
+.itemContainer {
+    -fx-padding: 4 8 4 8;
+    -fx-background-radius: 8;
+    -fx-background-color: color-lite;
+}
+
+.textFieldInput {
+    -fx-background-color: color-dark, color-background;
+}

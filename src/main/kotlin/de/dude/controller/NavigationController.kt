@@ -1,0 +1,88 @@
+package de.dude.controller
+
+import de.dude.controller.`interface`.Exitable
+import de.dude.util.Bundle
+import de.dude.util.Layout
+import de.dude.util.canDragWindow
+import javafx.fxml.FXML
+import javafx.scene.Node
+import javafx.scene.control.Button
+import javafx.scene.control.Label
+import javafx.scene.layout.Pane
+import java.util.*
+import kotlin.collections.ArrayDeque
+
+class NavigationController : Exitable {
+
+    @FXML
+    private lateinit var dragContainer: Node
+
+    @FXML
+    private lateinit var viewContainer: Pane
+
+    @FXML
+    lateinit var destinationTitle: Label
+
+    @FXML
+    private lateinit var backButton: Button
+
+    @FXML
+    private lateinit var settingsButton: Button
+
+    private val bundle: ResourceBundle by lazy { Bundle.get("strings.navigation") }
+    private val history = ArrayDeque<Layout>()
+    lateinit var actionReceiver: ActionReceiver
+
+    @FXML
+    private fun initialize() {
+        dragContainer.canDragWindow()
+        goTo("times", true)
+    }
+
+    @FXML
+    fun goBack(): Layout? {
+        if (history.size <= 1) {
+            showBackButton(false)
+            return null
+        }
+        history.removeLast()
+        val layout = history.last()
+        viewContainer.children[0] = layout.view
+        return layout
+    }
+
+    @FXML
+    private fun goToSettings() = goTo("settings")
+
+    @FXML
+    private fun exit() {
+        println("exit")
+        actionReceiver.exit()
+    }
+
+    fun goTo(layoutName: String, isInitial: Boolean = false) = Layout.load(layoutName).also { layout ->
+        showBackButton(!isInitial)
+        destinationTitle.text = bundle.getString("destination.$layoutName.title")
+        viewContainer.children[0] = layout.view
+        history.add(layout)
+        layout.getController<ViewController>().putNavigationController(this)
+    }
+
+    private fun showBackButton(doShow: Boolean) {
+        settingsButton.isVisible = !doShow
+        settingsButton.isManaged = !doShow
+        backButton.isVisible = doShow
+        backButton.isManaged = doShow
+    }
+
+    override fun onExit() {
+        while (history.isNotEmpty()) {
+            history.removeLast().getController<ViewController>().onExit()
+        }
+    }
+
+    interface ActionReceiver {
+        fun exit()
+    }
+
+}

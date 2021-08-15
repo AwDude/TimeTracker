@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<ScrollPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" styleClass="container"
+			fx:controller="de.dude.controller.SettingsController" fitToWidth="true" fitToHeight="true">
+
+	<VBox spacing="8" alignment="TOP_CENTER">
+
+		<Label text="%db.label" styleClass="bold"/>
+
+		<HBox alignment="CENTER" spacing="4">
+			<Label text="%db.host.label" maxWidth="Infinity" minWidth="60"/>
+			<TextField prefWidth="450" minWidth="100" styleClass="textFieldInput" fx:id="dbHostTextInput"/>
+		</HBox>
+
+		<HBox alignment="CENTER" spacing="4">
+			<Label text="%db.port.label" maxWidth="Infinity" minWidth="60"/>
+			<TextField prefWidth="450" minWidth="100" styleClass="textFieldInput" fx:id="dbPortTextInput"/>
+		</HBox>
+
+		<HBox alignment="CENTER" spacing="4">
+			<Label text="%db.name.label" maxWidth="Infinity" minWidth="60"/>
+			<TextField prefWidth="450" minWidth="100" styleClass="textFieldInput" fx:id="dbNameTextInput"/>
+		</HBox>
+
+		<HBox alignment="CENTER" spacing="4">
+			<Label text="%db.user.label" maxWidth="Infinity" minWidth="60"/>
+			<TextField prefWidth="450" minWidth="100" styleClass="textFieldInput" fx:id="dbUserTextInput"/>
+		</HBox>
+
+		<HBox alignment="CENTER" spacing="4">
+			<Label text="%db.password.label" maxWidth="Infinity" minWidth="60"/>
+			<TextField prefWidth="450" minWidth="100" styleClass="textFieldInput" fx:id="dbPasswordTextInput"/>
+		</HBox>
+
+	</VBox>
+
+	<StackPane.margin>
+		<Insets top="48"/>
+	</StackPane.margin>
+
+</ScrollPane>

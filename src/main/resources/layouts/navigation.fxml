@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+			stylesheets="@../styles/general.css, @../styles/navigation.css"
+			fx:controller="de.dude.controller.NavigationController" styleClass="resizeContainer">
+
+	<StackPane styleClass="container" fx:id="dragContainer" AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
+			   AnchorPane.leftAnchor="0" AnchorPane.bottomAnchor="0">
+
+		<StackPane fx:id="viewContainer">
+			<Pane/>
+			<StackPane.margin>
+				<Insets top="30"/>
+			</StackPane.margin>
+		</StackPane>
+
+		<Button fx:id="backButton" onAction="#goBack" StackPane.alignment="TOP_LEFT" styleClass="cleanButton"
+				maxWidth="26"
+				visible="false" managed="false">
+			<graphic>
+				<ImageView fitHeight="26.0" pickOnBounds="true" preserveRatio="true">
+					<Image url="/images/back_icon.png"/>
+				</ImageView>
+			</graphic>
+		</Button>
+
+		<Button fx:id="settingsButton" onAction="#goToSettings" StackPane.alignment="TOP_LEFT" styleClass="cleanButton"
+				maxWidth="22">
+			<graphic>
+				<ImageView fitHeight="22" pickOnBounds="true" preserveRatio="true">
+					<Image url="/images/settings_icon.png"/>
+				</ImageView>
+			</graphic>
+		</Button>
+
+		<Label fx:id="destinationTitle" styleClass="h1" StackPane.alignment="TOP_CENTER">
+			<StackPane.margin>
+				<Insets left="30" right="30"/>
+			</StackPane.margin>
+		</Label>
+
+		<Button onAction="#exit" StackPane.alignment="TOP_RIGHT" styleClass="cleanButton" maxWidth="26">
+			<graphic>
+				<ImageView fitHeight="26" pickOnBounds="true" preserveRatio="true">
+					<Image url="/images/close_icon.png"/>
+				</ImageView>
+			</graphic>
+		</Button>
+
+	</StackPane>
+</AnchorPane>
