@@ -1,7 +1,8 @@
 package de.dude
 
+import de.dude.action.ActionBus
+import de.dude.action.actions.LifeCycleAction
 import de.dude.controller.MainController
-import de.dude.controller.`interface`.Exitable
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.stage.Stage
@@ -14,11 +15,9 @@ class App : Application() {
         fun main(args: Array<String>) = launch(App::class.java, *args)
     }
 
-    private var mainController: Exitable? = null
-
     override fun start(primaryStage: Stage) {
         val stage = createStage(primaryStage)
-        mainController = MainController(stage)
+        MainController(stage)
     }
 
     private fun createStage(primaryStage: Stage): Stage {
@@ -35,9 +34,6 @@ class App : Application() {
         }
     }
 
-    override fun stop() = super.stop().also {
-        mainController?.onExit()
-        mainController = null
-    }
+    override fun stop() = ActionBus.call<LifeCycleAction> { onExit() }
 
 }

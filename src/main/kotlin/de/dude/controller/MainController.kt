@@ -1,6 +1,9 @@
 package de.dude.controller
 
-import de.dude.controller.`interface`.Exitable
+import de.dude.action.ActionBus
+import de.dude.action.actions.AppAction
+import de.dude.action.actions.LifeCycleAction
+import de.dude.action.actions.TrayAction
 import de.dude.repository.Defaults
 import de.dude.repository.Settings
 import de.dude.util.ResizeHelper
@@ -19,17 +22,16 @@ import kotlin.concurrent.scheduleAtFixedRate
 
 private const val MIN_IN_MS = 100L//60000L
 
-class MainController(private val stage: Stage) : Exitable, TrayService.ActionReceiver,
-    NavigationController.ActionReceiver {
+class MainController(private val stage: Stage) : LifeCycleAction, TrayAction, AppAction {
 
-    private val trayService = TrayService(this)
-    private var navigationController: Exitable? = null
+    private val trayService = TrayService()
 
     @Volatile
     private var totalMinutes = 0
     private var timer: Timer? = null
 
     init {
+        ActionBus.hook(this, LifeCycleAction::class, TrayAction::class, AppAction::class)
         initStage()
     }
 
@@ -45,9 +47,6 @@ class MainController(private val stage: Stage) : Exitable, TrayService.ActionRec
             y = point.y
             scene = Scene(loader.load(), width, height)
             focusedProperty().addListener { _, _, isFocused -> if (!isFocused) stage.hide() }
-        }
-        navigationController = loader.getController<NavigationController>().apply {
-            actionReceiver = this@MainController
         }
         ResizeHelper(stage, 4)
     }
@@ -114,10 +113,7 @@ class MainController(private val stage: Stage) : Exitable, TrayService.ActionRec
 
     override fun onExit() {
         stage.hide()
-        trayService.onExit()
         // TODO Save new times to file
-        navigationController?.onExit()
-        navigationController = null
     }
 
 }

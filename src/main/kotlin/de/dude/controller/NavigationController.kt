@@ -1,6 +1,8 @@
 package de.dude.controller
 
-import de.dude.controller.`interface`.Exitable
+import de.dude.action.ActionBus
+import de.dude.action.actions.AppAction
+import de.dude.action.actions.LifeCycleAction
 import de.dude.util.Bundle
 import de.dude.util.Layout
 import de.dude.util.canDragWindow
@@ -12,7 +14,7 @@ import javafx.scene.layout.Pane
 import java.util.*
 import kotlin.collections.ArrayDeque
 
-class NavigationController : Exitable {
+class NavigationController : LifeCycleAction {
 
     @FXML
     private lateinit var dragContainer: Node
@@ -31,7 +33,10 @@ class NavigationController : Exitable {
 
     private val bundle: ResourceBundle by lazy { Bundle.get("strings.navigation") }
     private val history = ArrayDeque<Layout>()
-    lateinit var actionReceiver: ActionReceiver
+
+    init {
+        ActionBus.hook<LifeCycleAction>(this)
+    }
 
     @FXML
     private fun initialize() {
@@ -55,10 +60,7 @@ class NavigationController : Exitable {
     private fun goToSettings() = goTo("settings")
 
     @FXML
-    private fun exit() {
-        println("exit")
-        actionReceiver.exit()
-    }
+    private fun exit() = ActionBus.call<AppAction> { exit() }
 
     fun goTo(layoutName: String, isInitial: Boolean = false) = Layout.load(layoutName).also { layout ->
         showBackButton(!isInitial)
@@ -79,10 +81,6 @@ class NavigationController : Exitable {
         while (history.isNotEmpty()) {
             history.removeLast().getController<ViewController>().onExit()
         }
-    }
-
-    interface ActionReceiver {
-        fun exit()
     }
 
 }

@@ -1,6 +1,8 @@
 package de.dude.util
 
-import de.dude.controller.`interface`.Exitable
+import de.dude.action.ActionBus
+import de.dude.action.actions.LifeCycleAction
+import de.dude.action.actions.TrayAction
 import java.awt.*
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
@@ -11,18 +13,20 @@ import javax.swing.SwingUtilities
 private const val IDLE_IMAGE_PATH = "/images/timer_icon.png"
 private const val ICON_SIZE = 16
 
-class TrayService(private val actionReceiver: ActionReceiver) : Exitable {
+class TrayService : LifeCycleAction {
 
     private val idleImage = ImageIO.read(javaClass.getResource(IDLE_IMAGE_PATH))
     private val trayIconLeft: TrayIcon
     private var trayIconRight: TrayIcon
     private val renderConfig = getRenderConfig()
+
     // TextAttribute.TRACKING, -0.120F maybe useful?
     private val timeFont = Font("Cornerstone", Font.PLAIN, 11)
     private val iconColor = Color(0, 200, 255)
     private var hasTwoIcons = false
 
     init {
+        ActionBus.hook<LifeCycleAction>(this)
         trayIconLeft = createTrayIcon()
         trayIconRight = createTrayIcon()
         SystemTray.getSystemTray().add(trayIconLeft)
@@ -35,8 +39,8 @@ class TrayService(private val actionReceiver: ActionReceiver) : Exitable {
             override fun mouseEntered(e: MouseEvent?) {}
             override fun mouseExited(e: MouseEvent?) {}
             override fun mouseClicked(e: MouseEvent?) {
-                if (SwingUtilities.isLeftMouseButton(e)) actionReceiver.onClick()
-                else if (SwingUtilities.isRightMouseButton(e)) actionReceiver.onRightClick()
+                if (SwingUtilities.isLeftMouseButton(e)) ActionBus.call<TrayAction> { onClick() }
+                else if (SwingUtilities.isRightMouseButton(e)) ActionBus.call<TrayAction> { onRightClick() }
             }
         })
     }
@@ -108,11 +112,6 @@ class TrayService(private val actionReceiver: ActionReceiver) : Exitable {
     override fun onExit() {
         SystemTray.getSystemTray().remove(trayIconLeft)
         SystemTray.getSystemTray().remove(trayIconRight)
-    }
-
-    interface ActionReceiver {
-        fun onClick() {}
-        fun onRightClick() {}
     }
 
 }

@@ -8,18 +8,22 @@ import javafx.stage.Screen
 fun Collection<String>.contains(other: String, ignoreCase: Boolean) = any { it.equals(other, ignoreCase) }
 
 @Suppress("UNCHECKED_CAST")
-@JvmName("putAddSet")
-fun <E, K, V : MutableSet<E>> MutableMap<K, V>.add(key: K, element: E) =
+fun <E, K, V : MutableSet<E>> MutableMap<K, V>.addInSet(key: K, element: E) {
     putIfAbsent(key, mutableSetOf(element) as V)?.add(element)
+}
 
 @Suppress("UNCHECKED_CAST")
-@JvmName("putAddList")
-fun <E, K, V : MutableList<E>> MutableMap<K, V>.add(key: K, element: E) =
+fun <E, K, V : MutableList<E>> MutableMap<K, V>.addInList(key: K, element: E) {
     putIfAbsent(key, mutableListOf(element) as V)?.add(element)
+}
+
+val Collection<*>?.nullableSize: Int get() = this?.size ?: 0
 
 fun runOnUI(runnable: Runnable) = if (Platform.isFxApplicationThread()) runnable.run() else Platform.runLater(runnable)
 
-fun catchAll(run: Runnable, onCatch: ((Exception) -> Unit)? = null) = try {
+fun tryRun(run: Runnable) = tryRun(run, null)
+
+fun tryRun(run: Runnable, onCatch: ((Exception) -> Unit)?) = try {
     run.run()
 } catch (e: Exception) {
     onCatch?.invoke(e)
