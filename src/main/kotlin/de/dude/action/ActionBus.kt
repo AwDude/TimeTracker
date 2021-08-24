@@ -1,57 +1,66 @@
 package de.dude.action
 
-import de.dude.util.addInSet
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.superclasses
+
+interface Action
 
 object ActionBus {
 
-    private val receivers = ConcurrentHashMap<KClass<*>, MutableSet<ActionReference<*>>>()
+    private val receivers = ConcurrentHashMap<KClass<out Action>, MutableSet<ActionReference<*>>>()
 
-    inline fun <reified E : Any> call(noinline run: E.() -> Unit) = callByClass(E::class, run)
+    inline fun <reified E : Action> call(noinline run: E.() -> Unit) = call(E::class, run)
 
-    fun <E : Any> callByClass(receiverClass: KClass<E>, run: E.() -> Unit) {
-        receivers[receiverClass]?.forEach { ActionReference ->
-            ActionReference.get()?.let { event ->
+    fun <E : Action> call(receiverClass: KClass<E>, run: E.() -> Unit) {
+        receivers[receiverClass]?.forEach { actionReference ->
+            actionReference.get()?.let { event ->
                 @Suppress("UNCHECKED_CAST")
                 (event as E).run()
             }
         }
     }
 
-    fun <E : Any> hook(receiver: E, vararg receiverClasses: KClass<out E>) = receiverClasses.forEach { receiverClass ->
-        hook(receiver, receiverClass)
+    fun <E : Action> hook(receiver: E, vararg receiverClasses: KClass<out E>) =
+        receiverClasses.forEach { receiverClass ->
+            hook(receiver, receiverClass)
+        }
+
+    inline fun <reified E : Action> hook(receiver: E) = hook(receiver, E::class)
+
+    fun <E : Action> hook(receiver: E, receiverClass: KClass<out E>) {
+        receivers.compute(receiverClass) { _, set ->
+            (set ?: ConcurrentHashMap.newKeySet()).apply {
+                add(ActionReference(receiver))
+            }
+        }
     }
 
-    inline fun <reified E : Any> hook(receiver: E) = hook(receiver, E::class)
-
-    @Synchronized
-    fun <E : Any> hook(receiver: E, receiverClass: KClass<out E>) {
-        if (!receiverClass.java.isInterface) throw Exception("Relay receivers have to be interfaces.")
-        receivers.addInSet(receiverClass, ActionReference(receiver))
+    fun hookAll(receiver: Action) = receiver::class.superclasses.forEach {
+        if (it.isSubclassOf(Action::class)) {
+            @Suppress("UNCHECKED_CAST")
+            hook(receiver, it as KClass<out Action>)
+        }
     }
 
-    inline fun <reified E : Any> unhook(receiver: E) = unhook(E::class, receiver)
+    inline fun <reified E : Action> unhook(receiver: E) = unhook(E::class, receiver)
 
-    fun <E : Any> unhook(receiverClass: KClass<E>, receiver: E) {
-        if (!receiverClass.java.isInterface) throw Exception("Unhook requires an interface. Use unhookAll to remove all interface hooks for one object.")
+    fun <E : Action> unhook(receiverClass: KClass<E>, receiver: E) {
         removeReceiver(receiverClass, receiver)
     }
 
-    fun unhookAll(receiver: Any) = receivers.keys.forEach { receiverClass ->
-        if (receiverClass.isInstance(receiver)) {
-            removeReceiver(receiverClass, receiver)
-        }
+    fun unhookAll(receiver: Action) = receivers.keys.forEach { receiverClass ->
+        if (receiverClass.isInstance(receiver)) removeReceiver(receiverClass, receiver)
     }
 
-    @Synchronized
-    private fun removeReceiver(receiverClass: KClass<*>, receiver: Any) {
-        val hooks = receivers[receiverClass] ?: return
-        hooks.removeIf { ActionReference ->
-            ActionReference.get().let { it == null || it == receiver }
-        }
-        if (hooks.isEmpty()) {
-            receivers.remove(receiverClass)
+    private fun removeReceiver(receiverClass: KClass<out Action>, receiver: Action) {
+        receivers.computeIfPresent(receiverClass) { _, set ->
+            set.removeIf { actionReference ->
+                actionReference.get().let { it == null || it == receiver }
+            }
+            // TODO need lock for Concurrent Set? what if now something gets added?
+            if (set.isEmpty()) null else set
         }
     }
 

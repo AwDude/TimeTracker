@@ -1,5 +1,7 @@
 package de.dude.action.actions
 
-interface AppAction {
+import de.dude.action.Action
+
+interface AppAction : Action {
     fun exit()
 }

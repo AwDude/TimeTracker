@@ -1,6 +1,8 @@
 package de.dude.action.actions
 
-interface TrayAction {
+import de.dude.action.Action
+
+interface TrayAction : Action {
     fun onClick()
     fun onRightClick()
 }
