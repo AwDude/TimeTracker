@@ -1,7 +1,7 @@
 package de.dude.action.actions
 
-import de.dude.action.Action
+import de.dude.action.ActionBus
 
-interface LifeCycleAction : Action {
+interface LifeCycleAction : ActionBus.Action {
     fun onExit()
 }

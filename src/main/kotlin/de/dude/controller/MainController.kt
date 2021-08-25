@@ -31,7 +31,7 @@ class MainController(private val stage: Stage) : LifeCycleAction, TrayAction, Ap
     private var timer: Timer? = null
 
     init {
-        ActionBus.hookAll(this)
+        ActionBus.hook(this)
         initStage()
     }
 

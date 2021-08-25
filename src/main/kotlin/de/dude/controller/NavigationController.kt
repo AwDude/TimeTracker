@@ -35,7 +35,7 @@ class NavigationController : LifeCycleAction {
     private val history = ArrayDeque<Layout>()
 
     init {
-        ActionBus.hook<LifeCycleAction>(this)
+        ActionBus.hook(this)
     }
 
     @FXML

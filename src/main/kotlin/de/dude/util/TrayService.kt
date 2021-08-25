@@ -26,7 +26,7 @@ class TrayService : LifeCycleAction {
     private var hasTwoIcons = false
 
     init {
-        ActionBus.hook<LifeCycleAction>(this)
+        ActionBus.hook(this)
         trayIconLeft = createTrayIcon()
         trayIconRight = createTrayIcon()
         SystemTray.getSystemTray().add(trayIconLeft)
