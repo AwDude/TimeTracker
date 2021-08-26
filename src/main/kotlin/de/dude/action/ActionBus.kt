@@ -14,20 +14,13 @@ object ActionBus {
 
     inline fun <reified E : Action> call(noinline run: E.() -> Unit) = call(E::class, run)
 
-    fun <E : Action> call(receiverClass: KClass<E>, run: E.() -> Unit) {
-        val callList = mutableListOf<E>()
-        receivers.computeIfPresent(receiverClass) { _, set ->
-            set.removeIf {
-                it.get()?.let { action ->
-                    @Suppress("UNCHECKED_CAST")
-                    callList.add(action as E)
-                    false
-                } ?: true
+    fun <E : Action> call(receiverClass: KClass<E>, run: E.() -> Unit) =
+        receivers[receiverClass]?.forEach { actionReference ->
+            actionReference.get()?.let { event ->
+                @Suppress("UNCHECKED_CAST")
+                (event as E).run()
             }
-            if (set.isEmpty()) null else set
         }
-        callList.forEach(run)
-    }
 
     fun hook(receiver: Action, vararg receiverClasses: KClass<out Action>) =
         receiverClasses.forEach { receiverClass ->
@@ -57,6 +50,13 @@ object ActionBus {
     fun unhook(receiver: Action) {
         val receiverClasses = receivers.keys.filter { it.isInstance(receiver) }
         unhook(receiver, *receiverClasses.toTypedArray())
+    }
+
+    fun cleanUp() = receivers.keys.forEach { key ->
+        receivers.computeIfPresent(key) { _, set ->
+            set.removeIf { it.get() == null }
+            if (set.isEmpty()) null else set
+        }
     }
 
 }
