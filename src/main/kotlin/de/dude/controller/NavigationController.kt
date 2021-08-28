@@ -3,18 +3,20 @@ package de.dude.controller
 import de.dude.action.ActionBus
 import de.dude.action.actions.AppAction
 import de.dude.action.actions.LifeCycleAction
-import de.dude.util.Bundle
-import de.dude.util.Layout
-import de.dude.util.canDragWindow
+import de.dude.action.actions.NavigationAction
+import de.dude.util.LayoutHelper
+import de.dude.util.extension.canDragWindow
+import de.dude.util.extension.getBundle
 import javafx.fxml.FXML
 import javafx.scene.Node
+import javafx.scene.Parent
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.Pane
 import java.util.*
 import kotlin.collections.ArrayDeque
 
-class NavigationController : LifeCycleAction {
+class NavigationController : LifeCycleAction, NavigationAction {
 
     @FXML
     private lateinit var dragContainer: Node
@@ -31,8 +33,8 @@ class NavigationController : LifeCycleAction {
     @FXML
     private lateinit var settingsButton: Button
 
-    private val bundle: ResourceBundle by lazy { Bundle.get("strings.navigation") }
-    private val history = ArrayDeque<Layout>()
+    private val bundle: ResourceBundle by lazy { getBundle("strings.navigation") }
+    private val history = ArrayDeque<Parent>()
 
     init {
         ActionBus.hook(this)
@@ -41,46 +43,41 @@ class NavigationController : LifeCycleAction {
     @FXML
     private fun initialize() {
         dragContainer.canDragWindow()
-        goTo("times", true)
+        goTo("times")
     }
 
     @FXML
-    fun goBack(): Layout? {
-        if (history.size <= 1) {
-            showBackButton(false)
-            return null
-        }
+    private fun exit() = ActionBus.call<AppAction> { exit() }
+
+    @FXML
+    override fun goBack() {
         history.removeLast()
-        val layout = history.last()
-        viewContainer.children[0] = layout.view
-        return layout
+        viewContainer.children[0] = history.last()
+        updateNavigationButtons()
     }
 
     @FXML
     private fun goToSettings() = goTo("settings")
 
-    @FXML
-    private fun exit() = ActionBus.call<AppAction> { exit() }
-
-    fun goTo(layoutName: String, isInitial: Boolean = false) = Layout.load(layoutName).also { layout ->
-        showBackButton(!isInitial)
-        destinationTitle.text = bundle.getString("destination.$layoutName.title")
-        viewContainer.children[0] = layout.view
-        history.add(layout)
-        layout.getController<ViewController>().putNavigationController(this)
+    override fun goTo(layoutName: String) {
+        LayoutHelper.load(layoutName).also { view ->
+            destinationTitle.text = bundle.getString("destination.$layoutName.title")
+            viewContainer.children[0] = view
+            history.add(view)
+            updateNavigationButtons()
+        }
     }
 
-    private fun showBackButton(doShow: Boolean) {
-        settingsButton.isVisible = !doShow
-        settingsButton.isManaged = !doShow
-        backButton.isVisible = doShow
-        backButton.isManaged = doShow
+    private fun updateNavigationButtons() {
+        val showBackButton = history.size > 1
+        settingsButton.isVisible = !showBackButton
+        settingsButton.isManaged = !showBackButton
+        backButton.isVisible = showBackButton
+        backButton.isManaged = showBackButton
     }
 
     override fun onExit() {
-        while (history.isNotEmpty()) {
-            history.removeLast().getController<ViewController>().onExit()
-        }
+        history.clear()
     }
 
 }

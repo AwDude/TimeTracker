@@ -4,18 +4,12 @@ import de.dude.action.ActionBus
 import de.dude.action.actions.AppAction
 import de.dude.action.actions.LifeCycleAction
 import de.dude.action.actions.TrayAction
-import de.dude.repository.Defaults
-import de.dude.repository.Settings
 import de.dude.util.ResizeHelper
 import de.dude.util.TrayService
-import de.dude.util.getTaskBarHeight
-import de.dude.util.isInScreen
 import de.dude.view.Dialog
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
-import javafx.geometry.Point2D
 import javafx.scene.Scene
-import javafx.stage.Screen
 import javafx.stage.Stage
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
@@ -37,17 +31,7 @@ class MainController(private val stage: Stage) : LifeCycleAction, TrayAction, Ap
 
     private fun initStage() {
         val loader = FXMLLoader(javaClass.getResource("/layouts/navigation.fxml"))
-        stage.apply {
-            minHeight = Defaults.STAGE_MIN_HEIGHT
-            minWidth = Defaults.STAGE_MIN_WIDTH
-            val width = Settings.stageWidth
-            val height = Settings.stageHeight
-            val point = getBestStagePosition(Settings.stageX, Settings.stageY, width, height)
-            x = point.x
-            y = point.y
-            scene = Scene(loader.load(), width, height)
-            focusedProperty().addListener { _, _, isFocused -> if (!isFocused) stage.hide() }
-        }
+        stage.scene = Scene(loader.load())
         ResizeHelper(stage, 4)
     }
 
@@ -97,14 +81,6 @@ class MainController(private val stage: Stage) : LifeCycleAction, TrayAction, Ap
             String.format("%2s", minutes)
         }
         trayService.showTime(minuteText, hourText)
-    }
-
-    private fun getBestStagePosition(x: Double?, y: Double?, width: Double, height: Double): Point2D {
-        if (x != null && y != null && isInScreen(x, y, width, height)) return Point2D(x, y)
-        val screenBounds = Screen.getPrimary().bounds
-        val newX = screenBounds.maxX - width
-        val newY = screenBounds.maxY - height - getTaskBarHeight() - 1
-        return Point2D(newX, newY)
     }
 
     override fun exit() {

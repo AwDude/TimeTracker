@@ -1,2 +1,4 @@
 - add custom exception (bundles not found etc)
 - fix icon and textIcon
+- better app/stage/navigation structure
+- onExit (or Actions in general) not getting called

@@ -1,28 +1,34 @@
 package de.dude.action
 
+import de.dude.util.extension.className
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.superclasses
 
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 object ActionBus {
 
     interface Action
+
+    @Volatile
+    var log: ((String) -> Unit)? = null
 
     private val receivers = ConcurrentHashMap<KClass<out Action>, MutableSet<ActionReference<*>>>()
 
     inline fun <reified E : Action> call(noinline run: E.() -> Unit) = call(E::class, run)
 
-    fun <E : Action> call(receiverClass: KClass<E>, run: E.() -> Unit) =
+    fun <E : Action> call(receiverClass: KClass<E>, run: E.() -> Unit) {
         receivers[receiverClass]?.forEach { actionReference ->
-            actionReference.get()?.let { event ->
+            actionReference.get()?.let { action ->
                 @Suppress("UNCHECKED_CAST")
-                (event as E).run()
+                (action as E).run()
             }
         }
+        log?.invoke("Called ${receiverClass.simpleName} on ${receivers[receiverClass]?.map { it.get().className }}")
+    }
 
-    fun hook(receiver: Action, vararg receiverClasses: KClass<out Action>) =
+    fun hook(receiver: Action, vararg receiverClasses: KClass<out Action>) {
         receiverClasses.forEach { receiverClass ->
             receivers.compute(receiverClass) { _, set ->
                 (set ?: ConcurrentHashMap.newKeySet()).apply {
@@ -30,6 +36,8 @@ object ActionBus {
                 }
             }
         }
+        log?.invoke("Hooked ${receiver.className} as ${receiverClasses.map { it.simpleName }}")
+    }
 
     fun hook(receiver: Action) {
         @Suppress("UNCHECKED_CAST")

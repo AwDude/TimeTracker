@@ -3,6 +3,7 @@ package de.dude
 import de.dude.action.ActionBus
 import de.dude.action.actions.LifeCycleAction
 import de.dude.controller.MainController
+import de.dude.view.CleanStage
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.stage.Stage
@@ -16,22 +17,14 @@ class App : Application() {
     }
 
     override fun start(primaryStage: Stage) {
-        val stage = createStage(primaryStage)
-        MainController(stage)
-    }
-
-    private fun createStage(primaryStage: Stage): Stage {
+        //ActionBus.log = ::println
         primaryStage.apply {
             initStyle(StageStyle.UTILITY)
             opacity = 0.0
             setOnHidden { Platform.exit() }
             show()
         }
-        return Stage().apply {
-            initOwner(primaryStage)
-            initStyle(StageStyle.UNDECORATED)
-            isAlwaysOnTop = true
-        }
+        MainController(CleanStage(primaryStage))
     }
 
     override fun stop() = ActionBus.call<LifeCycleAction> { onExit() }

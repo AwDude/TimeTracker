@@ -1,13 +1,13 @@
 package de.dude.view
 
-import de.dude.util.Bundle
+import de.dude.util.extension.getBundle
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import java.util.*
 
 object Dialog {
 
-    private val bundle: ResourceBundle by lazy { Bundle.get("strings.dialog") }
+    private val bundle: ResourceBundle by lazy { getBundle("strings.dialog") }
 
     fun discardChanges(onConfirm: Runnable? = null) =
         confirmDialog("discard.title", "discard.content", onConfirm)

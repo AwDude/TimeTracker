@@ -1,33 +1,15 @@
-package de.dude.util
+@file:Suppress("unused")
 
+package de.dude.util.extension
+
+import de.dude.repository.Defaults
 import de.dude.repository.Settings
 import javafx.application.Platform
 import javafx.scene.Node
 import javafx.stage.Screen
-
-fun Collection<String>.contains(other: String, ignoreCase: Boolean) = any { it.equals(other, ignoreCase) }
-
-@Suppress("UNCHECKED_CAST")
-fun <E, K, V : MutableSet<E>> MutableMap<K, V>.addInSet(key: K, element: E) {
-    putIfAbsent(key, mutableSetOf(element) as V)?.add(element)
-}
-
-@Suppress("UNCHECKED_CAST")
-fun <E, K, V : MutableList<E>> MutableMap<K, V>.addInList(key: K, element: E) {
-    putIfAbsent(key, mutableListOf(element) as V)?.add(element)
-}
-
-val Collection<*>?.nullableSize: Int get() = this?.size ?: 0
+import java.util.*
 
 fun runOnUI(runnable: Runnable) = if (Platform.isFxApplicationThread()) runnable.run() else Platform.runLater(runnable)
-
-fun tryRun(run: Runnable) = tryRun(run, null)
-
-fun tryRun(run: Runnable, onCatch: ((Exception) -> Unit)?) = try {
-    run.run()
-} catch (e: Exception) {
-    onCatch?.invoke(e)
-}
 
 fun Node.canDragWindow() {
     var xOffset = 0.0
@@ -66,3 +48,9 @@ fun isInScreen(x: Double, y: Double, width: Double = 1.0, height: Double = 1.0):
 }
 
 fun getTaskBarHeight() = Screen.getPrimary().bounds.height - Screen.getPrimary().visualBounds.height
+
+fun getBundle(key: String): ResourceBundle = try {
+    ResourceBundle.getBundle(key)
+} catch (e: MissingResourceException) {
+    ResourceBundle.getBundle(key, Defaults.LANGUAGE)
+}
