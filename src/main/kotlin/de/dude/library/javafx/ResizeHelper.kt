@@ -1,7 +1,6 @@
-package de.dude.util
+package de.dude.library.javafx
 
-import de.dude.repository.Settings
-import de.dude.util.extension.isInScreen
+import de.dude.timetracker.repository.Settings
 import javafx.event.EventHandler
 import javafx.scene.Cursor
 import javafx.scene.input.MouseEvent

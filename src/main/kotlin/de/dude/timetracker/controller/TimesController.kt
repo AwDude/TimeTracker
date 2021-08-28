@@ -1,4 +1,4 @@
-package de.dude.controller
+package de.dude.timetracker.controller
 
 import javafx.fxml.FXML
 

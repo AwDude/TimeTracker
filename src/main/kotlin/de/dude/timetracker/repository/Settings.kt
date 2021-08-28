@@ -1,4 +1,4 @@
-package de.dude.repository
+package de.dude.timetracker.repository
 
 import java.util.prefs.Preferences
 

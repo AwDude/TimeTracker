@@ -1,4 +1,4 @@
-package de.dude.view
+package de.dude.library.javafx
 
 import javafx.geometry.Pos
 import javafx.scene.control.Button

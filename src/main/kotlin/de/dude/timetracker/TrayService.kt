@@ -1,8 +1,8 @@
-package de.dude.util
+package de.dude.timetracker
 
-import de.dude.action.ActionBus
-import de.dude.action.actions.LifeCycleAction
-import de.dude.action.actions.TrayAction
+import de.dude.library.action.ActionBus
+import de.dude.timetracker.action.LifeCycleAction
+import de.dude.timetracker.action.TrayAction
 import java.awt.*
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener

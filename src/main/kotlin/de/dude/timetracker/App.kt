@@ -1,9 +1,9 @@
-package de.dude
+package de.dude.timetracker
 
-import de.dude.action.ActionBus
-import de.dude.action.actions.LifeCycleAction
-import de.dude.controller.MainController
-import de.dude.view.CleanStage
+import de.dude.library.action.ActionBus
+import de.dude.library.javafx.CleanStage
+import de.dude.timetracker.action.LifeCycleAction
+import de.dude.timetracker.controller.MainController
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.stage.Stage

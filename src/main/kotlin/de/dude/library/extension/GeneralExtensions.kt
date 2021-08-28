@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package de.dude.util.extension
+package de.dude.library.extension
 
 fun <R> tryDo(run: () -> R): R? = try {
     run()

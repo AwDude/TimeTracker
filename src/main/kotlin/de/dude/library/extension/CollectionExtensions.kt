@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package de.dude.util.extension
+package de.dude.library.extension
 
 val Collection<*>?.nullableSize: Int get() = this?.size ?: 0
 

@@ -1,9 +1,9 @@
 @file:Suppress("unused")
 
-package de.dude.util.extension
+package de.dude.library.javafx
 
-import de.dude.repository.Defaults
-import de.dude.repository.Settings
+import de.dude.timetracker.repository.Defaults
+import de.dude.timetracker.repository.Settings
 import javafx.application.Platform
 import javafx.scene.Node
 import javafx.stage.Screen

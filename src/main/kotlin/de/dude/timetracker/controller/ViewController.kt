@@ -1,7 +1,7 @@
-package de.dude.controller
+package de.dude.timetracker.controller
 
-import de.dude.action.ActionBus
-import de.dude.action.actions.NavigationAction
+import de.dude.library.action.ActionBus
+import de.dude.timetracker.action.NavigationAction
 import javafx.fxml.Initializable
 import java.net.URL
 import java.util.*
@@ -14,10 +14,6 @@ open class ViewController : Initializable {
     override fun initialize(location: URL?, resources: ResourceBundle?) {
         this.resources = resources
         onCreate()
-    }
-
-    protected fun goBack() = ActionBus.call<NavigationAction> {
-        goBack()
     }
 
     protected fun goTo(layoutName: String) = ActionBus.call<NavigationAction> {

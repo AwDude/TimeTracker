@@ -76,24 +76,24 @@
 				<configuration>
 					<release>${java.version}</release>
 					<launcher>launcher</launcher>
-					<mainClass>de.dude.App</mainClass>
+					<mainClass>de.dude.timetracker.App</mainClass>
 					<!--NEEDED FOR MODULARITY
 					<includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
 					<jlinkImageName>ExcelAnalyser</jlinkImageName>
-					<mainClass>de.dude.ExcelAnalyser/de.dude.App</mainClass>-->
+					<mainClass>de.dude.ExcelAnalyser/de.dude.timetracker.App</mainClass>-->
 				</configuration>
 				<!-- FOR DEBUGGING -->
 <!--				<executions>
 					<execution>
 						<id>run</id>
 						<configuration>
-							<mainClass>de.dude.App</mainClass>
+							<mainClass>de.dude.timetracker.App</mainClass>
 						</configuration>
 					</execution>
 					<execution>
 						<id>debug</id>
 						<configuration>
-							<mainClass>de.dude.App</mainClass>
+							<mainClass>de.dude.timetracker.App</mainClass>
 							<options>
 								<option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8000</option>
 							</options>

@@ -1,9 +1,7 @@
-package de.dude.view
+package de.dude.library.javafx
 
-import de.dude.repository.Defaults
-import de.dude.repository.Settings
-import de.dude.util.extension.getTaskBarHeight
-import de.dude.util.extension.isInScreen
+import de.dude.timetracker.repository.Defaults
+import de.dude.timetracker.repository.Settings
 import javafx.geometry.Point2D
 import javafx.stage.Screen
 import javafx.stage.Stage

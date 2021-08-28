@@ -1,7 +1,7 @@
-package de.dude.controller
+package de.dude.timetracker.controller
 
-import de.dude.action.ActionBus
-import de.dude.action.actions.LifeCycleAction
+import de.dude.library.action.ActionBus
+import de.dude.timetracker.action.LifeCycleAction
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.TextField

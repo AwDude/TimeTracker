@@ -1,12 +1,12 @@
-package de.dude.controller
+package de.dude.timetracker.controller
 
-import de.dude.action.ActionBus
-import de.dude.action.actions.AppAction
-import de.dude.action.actions.LifeCycleAction
-import de.dude.action.actions.NavigationAction
-import de.dude.util.LayoutHelper
-import de.dude.util.extension.canDragWindow
-import de.dude.util.extension.getBundle
+import de.dude.library.action.ActionBus
+import de.dude.library.javafx.LayoutHelper
+import de.dude.library.javafx.canDragWindow
+import de.dude.library.javafx.getBundle
+import de.dude.timetracker.action.AppAction
+import de.dude.timetracker.action.LifeCycleAction
+import de.dude.timetracker.action.NavigationAction
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.Parent
@@ -50,7 +50,7 @@ class NavigationController : LifeCycleAction, NavigationAction {
     private fun exit() = ActionBus.call<AppAction> { exit() }
 
     @FXML
-    override fun goBack() {
+    private fun goBack() {
         history.removeLast()
         viewContainer.children[0] = history.last()
         updateNavigationButtons()

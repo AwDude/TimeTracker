@@ -1,7 +1,6 @@
-package de.dude.util
+package de.dude.library.javafx
 
-import de.dude.util.extension.getBundle
-import de.dude.util.extension.tryDo
+import de.dude.library.extension.tryDo
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 

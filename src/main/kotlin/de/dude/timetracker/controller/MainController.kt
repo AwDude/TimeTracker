@@ -1,12 +1,12 @@
-package de.dude.controller
+package de.dude.timetracker.controller
 
-import de.dude.action.ActionBus
-import de.dude.action.actions.AppAction
-import de.dude.action.actions.LifeCycleAction
-import de.dude.action.actions.TrayAction
-import de.dude.util.ResizeHelper
-import de.dude.util.TrayService
-import de.dude.view.Dialog
+import de.dude.library.action.ActionBus
+import de.dude.library.javafx.ResizeHelper
+import de.dude.timetracker.TrayService
+import de.dude.timetracker.action.AppAction
+import de.dude.timetracker.action.LifeCycleAction
+import de.dude.timetracker.action.TrayAction
+import de.dude.timetracker.view.Dialog
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene

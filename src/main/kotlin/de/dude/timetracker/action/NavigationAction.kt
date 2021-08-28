@@ -1,8 +1,7 @@
-package de.dude.action.actions
+package de.dude.timetracker.action
 
-import de.dude.action.ActionBus
+import de.dude.library.action.ActionBus
 
 interface NavigationAction : ActionBus.Action {
     fun goTo(layoutName: String)
-    fun goBack()
 }

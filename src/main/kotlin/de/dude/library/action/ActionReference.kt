@@ -1,4 +1,4 @@
-package de.dude.action
+package de.dude.library.action
 
 import java.lang.ref.WeakReference
 

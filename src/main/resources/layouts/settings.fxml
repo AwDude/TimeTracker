@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <ScrollPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" styleClass="container"
-			fx:controller="de.dude.controller.SettingsController" fitToWidth="true" fitToHeight="true">
+			fx:controller="de.dude.timetracker.controller.SettingsController" fitToWidth="true" fitToHeight="true">
 
 	<VBox spacing="8" alignment="TOP_CENTER">
 
