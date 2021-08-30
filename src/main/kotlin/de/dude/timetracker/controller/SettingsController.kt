@@ -1,12 +1,10 @@
 package de.dude.timetracker.controller
 
-import de.dude.library.action.ActionBus
-import de.dude.timetracker.action.LifeCycleAction
 import javafx.fxml.FXML
 import javafx.scene.control.ChoiceBox
 import javafx.scene.control.TextField
 
-class SettingsController : ViewController(), LifeCycleAction {
+class SettingsController : ViewController() {
 
     /*
         - dark or light theme
@@ -15,9 +13,6 @@ class SettingsController : ViewController(), LifeCycleAction {
         - window always on top
         - continue timer while editing
      */
-    init {
-        ActionBus.hook(this, LifeCycleAction::class)
-    }
 
     @FXML
     lateinit var dbTypeChoiceBox: ChoiceBox<String>
@@ -45,7 +40,8 @@ class SettingsController : ViewController(), LifeCycleAction {
     }
 
     // TODO not getting called sometimes. Fix needed!
-    override fun onExit() {
+    override fun onClose() {
+        println("Settings onClose")
         saveSettings()
     }
 

@@ -77,6 +77,7 @@ class NavigationController : LifeCycleAction, NavigationAction {
     }
 
     override fun onExit() {
+        viewContainer.children.clear()
         history.clear()
     }
 

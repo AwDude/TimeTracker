@@ -22,4 +22,6 @@ open class ViewController : Initializable {
 
     protected open fun onCreate() {}
 
+    open fun onClose() { }
+
 }
