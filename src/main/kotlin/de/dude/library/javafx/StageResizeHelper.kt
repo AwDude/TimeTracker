@@ -1,12 +1,15 @@
 package de.dude.library.javafx
 
-import de.dude.timetracker.repository.Settings
 import javafx.event.EventHandler
 import javafx.scene.Cursor
 import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
 
-class ResizeHelper(private val stage: Stage, private val resizeArea: Int) {
+class StageResizeHelper(
+    private val stage: Stage,
+    private val resizeArea: Int,
+    private val persistPosition: ((x: Double, y: Double, width: Double, height: Double) -> Unit)? = null
+) {
     private val listeners = HashMap<Cursor, EventHandler<MouseEvent>>()
     private var prevSceneX = 0.0
     private var prevSceneY = 0.0
@@ -19,6 +22,14 @@ class ResizeHelper(private val stage: Stage, private val resizeArea: Int) {
     init {
         createListeners()
         launch()
+    }
+
+    fun stop() {
+        listeners.clear()
+        stage.scene.onMouseReleased = null
+        stage.scene.onMousePressed = null
+        stage.scene.onMouseMoved = null
+        stage.scene.onMouseDragged = null
     }
 
     private fun createListeners() {
@@ -85,15 +96,12 @@ class ResizeHelper(private val stage: Stage, private val resizeArea: Int) {
     private fun launch() {
         stage.scene.setOnMouseReleased {
             if (hasSizeChanged) {
-                Settings.stageX = stage.x
-                Settings.stageY = stage.y
-                Settings.stageHeight = stage.height
-                Settings.stageWidth = stage.width
+                persistPosition?.invoke(stage.x, stage.y, stage.width, stage.height)
                 hasSizeChanged = false
             }
         }
-        stage.scene.onMousePressed = EventHandler { event: MouseEvent ->
-            if (stage.scene.cursor === Cursor.DEFAULT) return@EventHandler
+        stage.scene.setOnMousePressed { event: MouseEvent ->
+            if (stage.scene.cursor === Cursor.DEFAULT) return@setOnMousePressed
             prevSceneX = event.sceneX
             prevSceneY = event.sceneY
             prevScreenX = event.screenX
@@ -102,7 +110,7 @@ class ResizeHelper(private val stage: Stage, private val resizeArea: Int) {
             prevStageHeight = stage.height
             hasSizeChanged = true
         }
-        stage.scene.onMouseMoved = EventHandler { event: MouseEvent ->
+        stage.scene.setOnMouseMoved { event: MouseEvent ->
             val sx = event.sceneX
             val sy = event.sceneY
             val leftTrigger = sx > 0 && sx < resizeArea

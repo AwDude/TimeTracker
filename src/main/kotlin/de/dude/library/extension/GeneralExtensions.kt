@@ -9,3 +9,5 @@ fun <R> tryDo(run: () -> R): R? = try {
 }
 
 val Any?.className: String get() = this?.let { it::class.simpleName } ?: "null"
+
+fun noneNull(vararg objects: Any?) = !objects.any { it == null }

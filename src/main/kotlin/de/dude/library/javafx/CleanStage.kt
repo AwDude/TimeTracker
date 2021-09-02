@@ -1,41 +1,93 @@
 package de.dude.library.javafx
 
-import de.dude.timetracker.repository.Defaults
-import de.dude.timetracker.repository.Settings
+import de.dude.library.extension.noneNull
+import de.dude.library.repository.LibStore
+import javafx.beans.value.ChangeListener
 import javafx.geometry.Point2D
 import javafx.stage.Screen
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 
-class CleanStage(parentStage: Stage? = null) : Stage() {
+@Suppress("MemberVisibilityCanBePrivate")
+class CleanStage : Stage() {
+
+    val isResizeable: Boolean
+        get() = resizer != null
+
+    val isPersistPosition: Boolean
+        get() = windowKey != null
+
+    var isHideOnFocusLoss: Boolean
+        get() = focusLossListener != null
+        set(value) = hideOnFocusLoss(value)
+
+    private var focusLossListener: ChangeListener<Boolean>? = null
+    private var resizer: StageResizeHelper? = null
+    private var windowKey: String? = null
 
     init {
         initStyle(StageStyle.UNDECORATED)
-        val targetWidth = Settings.stageWidth
-        val targetHeight = Settings.stageHeight
-        val bestPos = getBestStagePosition(targetWidth, targetHeight)
-        x = bestPos.x
-        y = bestPos.y
-        width = targetWidth
-        height = targetHeight
-        minWidth = Defaults.STAGE_MIN_WIDTH
-        minHeight = Defaults.STAGE_MIN_HEIGHT
-        isAlwaysOnTop = true
-        focusedProperty().addListener { _, _, isFocused -> if (!isFocused) hide() }
-        parentStage?.let { initOwner(it) }
     }
 
-    private fun getBestStagePosition(targetWidth: Double, targetHeight: Double): Point2D {
-        val targetX = Settings.stageX
-        val targetY = Settings.stageY
+    fun enableResizeable(resizeArea: Int = 4) {
+        if (resizer != null) return
+        resizer = StageResizeHelper(this, resizeArea) { x, y, width, height ->
+            windowKey?.let {
+                LibStore.setStageX(it, x)
+                LibStore.setStageY(it, y)
+                LibStore.setStageWidth(it, width)
+                LibStore.setStageHeight(it, height)
+            }
+        }
+    }
 
-        if (targetX != null && targetY != null && isInScreen(targetX, targetY, targetWidth, targetHeight)) {
-            return Point2D(targetX, targetY)
+    fun disableResizeable() {
+        resizer?.stop()
+        resizer = null
+    }
+
+    fun enablePersistPosition(windowKey: String) {
+        this.windowKey = windowKey
+        setInitialStagePosition()
+    }
+
+    fun disablePersistPosition() {
+        windowKey = null
+    }
+
+    private fun setInitialStagePosition() = windowKey?.let { key ->
+        val tarX = LibStore.getStageX(key)
+        val tarY = LibStore.getStageY(key)
+        val tarWidth = LibStore.getStageWidth(key)
+        val tarHeight = LibStore.getStageHeight(key)
+        if (noneNull(tarX, tarY, tarWidth, tarHeight)) {
+            val bestPos = getBestStagePosition(tarX!!, tarY!!, tarWidth!!, tarHeight!!)
+            x = bestPos.x
+            y = bestPos.y
+            width = tarWidth
+            height = tarHeight
+        }
+    }
+
+    private fun getBestStagePosition(tarX: Double, tarY: Double, tarWidth: Double, tarHeight: Double): Point2D {
+        if (isInScreen(tarX, tarY, tarWidth, tarHeight)) {
+            return Point2D(tarX, tarY)
         }
         val screenBounds = Screen.getPrimary().bounds
-        val newX = screenBounds.maxX - targetWidth
-        val newY = screenBounds.maxY - targetHeight - getTaskBarHeight() - 1
+        val newX = screenBounds.maxX - tarWidth
+        val newY = screenBounds.maxY - tarHeight - getTaskBarHeight() - 1
         return Point2D(newX, newY)
+    }
+
+    private fun hideOnFocusLoss(doHide: Boolean) {
+        if (doHide) {
+            if (focusLossListener == null) {
+                focusLossListener = ChangeListener { _, _, isFocused -> if (!isFocused) hide() }
+                focusedProperty().addListener(focusLossListener)
+            }
+        } else {
+            focusLossListener?.let { focusedProperty().removeListener(it) }
+        }
     }
 
 }

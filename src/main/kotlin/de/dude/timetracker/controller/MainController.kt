@@ -1,7 +1,7 @@
 package de.dude.timetracker.controller
 
 import de.dude.library.action.ActionBus
-import de.dude.library.javafx.ResizeHelper
+import de.dude.library.javafx.StageResizeHelper
 import de.dude.timetracker.TrayService
 import de.dude.timetracker.action.AppAction
 import de.dude.timetracker.action.LifeCycleAction
@@ -32,7 +32,7 @@ class MainController(private val stage: Stage) : LifeCycleAction, TrayAction, Ap
     private fun initStage() {
         val loader = FXMLLoader(javaClass.getResource("/layouts/navigation.fxml"))
         stage.scene = Scene(loader.load())
-        ResizeHelper(stage, 4)
+        StageResizeHelper(stage, 4)
     }
 
     private fun showStage() {
