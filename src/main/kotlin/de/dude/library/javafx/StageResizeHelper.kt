@@ -6,133 +6,163 @@ import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
 
 class StageResizeHelper(
-    private val stage: Stage,
-    private val resizeArea: Int,
-    private val persistPosition: ((x: Double, y: Double, width: Double, height: Double) -> Unit)? = null
+    private val stage: Stage, resizeArea: Int,
+    onPersistPosition: ((x: Double, y: Double, width: Double, height: Double) -> Unit)? = null
 ) {
-    private val listeners = HashMap<Cursor, EventHandler<MouseEvent>>()
     private var prevSceneX = 0.0
     private var prevSceneY = 0.0
     private var prevScreenX = 0.0
     private var prevScreenY = 0.0
     private var prevStageWidth = 0.0
     private var prevStageHeight = 0.0
-    private var hasSizeChanged = false
+    private var currentDragListener: EventHandler<MouseEvent>? = null
+
+    private val pressListener = EventHandler { event: MouseEvent ->
+        prevSceneX = event.sceneX
+        prevSceneY = event.sceneY
+        prevScreenX = event.screenX
+        prevScreenY = event.screenY
+        prevStageWidth = stage.width
+        prevStageHeight = stage.height
+        event.consume()
+    }
+    private val releaseListener = onPersistPosition?.let { onPersist ->
+        EventHandler { event: MouseEvent ->
+            onPersist(stage.x, stage.y, stage.width, stage.height)
+            event.consume()
+        }
+    }
+    private val moveListener = EventHandler { event: MouseEvent ->
+        val sx = event.sceneX
+        val sy = event.sceneY
+        val leftTrigger = sx > 0 && sx < resizeArea
+        val rightTrigger = sx < stage.scene.width && sx > stage.scene.width - resizeArea
+        val upperTrigger = sy < stage.scene.height && sy > stage.scene.height - resizeArea
+        val lowerTrigger = sy > 0 && sy < resizeArea
+
+        when {
+            leftTrigger -> when {
+                lowerTrigger -> setCursor(Cursor.NW_RESIZE, nwDragListener)
+                upperTrigger -> setCursor(Cursor.NE_RESIZE, neDragListener)
+                else -> setCursor(Cursor.E_RESIZE, eDragListener)
+            }
+            rightTrigger -> when {
+                lowerTrigger -> setCursor(Cursor.SW_RESIZE, swDragListener)
+                upperTrigger -> setCursor(Cursor.SE_RESIZE, seDragListener)
+                else -> setCursor(Cursor.W_RESIZE, wDragListener)
+            }
+            else -> when {
+                lowerTrigger -> setCursor(Cursor.N_RESIZE, nDragListener)
+                upperTrigger -> setCursor(Cursor.S_RESIZE, sDragListener)
+                else -> setCursor(Cursor.DEFAULT, null)
+            }
+        }
+    }
+    private val nwDragListener = EventHandler { event: MouseEvent ->
+        val newWidth = prevStageWidth - (event.screenX - prevScreenX)
+        val newHeight = prevStageHeight - (event.screenY - prevScreenY)
+        if (newHeight > stage.minHeight) {
+            stage.y = event.screenY - prevSceneY
+            stage.height = newHeight
+        }
+        if (newWidth > stage.minWidth) {
+            stage.x = event.screenX - prevSceneX
+            stage.width = newWidth
+        }
+        event.consume()
+    }
+    private val neDragListener = EventHandler { event: MouseEvent ->
+        val newWidth = prevStageWidth - (event.screenX - prevScreenX)
+        val newHeight = prevStageHeight + (event.screenY - prevScreenY)
+        if (newHeight > stage.minHeight) stage.height = newHeight
+        if (newWidth > stage.minWidth) {
+            stage.x = event.screenX - prevSceneX
+            stage.width = newWidth
+        }
+        event.consume()
+    }
+    private val swDragListener = EventHandler { event: MouseEvent ->
+        val newWidth = prevStageWidth + (event.screenX - prevScreenX)
+        val newHeight = prevStageHeight - (event.screenY - prevScreenY)
+        if (newHeight > stage.minHeight) {
+            stage.height = newHeight
+            stage.y = event.screenY - prevSceneY
+        }
+        if (newWidth > stage.minWidth) stage.width = newWidth
+        event.consume()
+    }
+    private val seDragListener = EventHandler { event: MouseEvent ->
+        val newWidth = prevStageWidth + (event.screenX - prevScreenX)
+        val newHeight = prevStageHeight + (event.screenY - prevScreenY)
+        if (newHeight > stage.minHeight) stage.height = newHeight
+        if (newWidth > stage.minWidth) stage.width = newWidth
+        event.consume()
+    }
+    private val eDragListener = EventHandler { event: MouseEvent ->
+        val newWidth = prevStageWidth - (event.screenX - prevScreenX)
+        if (newWidth > stage.minWidth) {
+            stage.x = event.screenX - prevSceneX
+            stage.width = newWidth
+        }
+        event.consume()
+    }
+    private val wDragListener = EventHandler { event: MouseEvent ->
+        val newWidth = prevStageWidth + (event.screenX - prevScreenX)
+        if (newWidth > stage.minWidth) stage.width = newWidth
+        event.consume()
+    }
+    private val nDragListener = EventHandler { event: MouseEvent ->
+        val newHeight = prevStageHeight - (event.screenY - prevScreenY)
+        if (newHeight > stage.minHeight) {
+            stage.y = event.screenY - prevSceneY
+            stage.height = newHeight
+        }
+        event.consume()
+    }
+    private val sDragListener = EventHandler { event: MouseEvent ->
+        val newHeight = prevStageHeight + (event.screenY - prevScreenY)
+        if (newHeight > stage.minHeight && isInScreen(event.screenX, event.screenY)) stage.height = newHeight
+        event.consume()
+    }
 
     init {
-        createListeners()
-        launch()
+        stage.scene.addEventFilter(MouseEvent.MOUSE_MOVED, moveListener)
     }
 
     fun stop() {
-        listeners.clear()
-        stage.scene.onMouseReleased = null
-        stage.scene.onMousePressed = null
-        stage.scene.onMouseMoved = null
-        stage.scene.onMouseDragged = null
-    }
-
-    private fun createListeners() {
-        listeners[Cursor.NW_RESIZE] = EventHandler { event: MouseEvent ->
-            val newWidth = prevStageWidth - (event.screenX - prevScreenX)
-            val newHeight = prevStageHeight - (event.screenY - prevScreenY)
-            if (newHeight > stage.minHeight) {
-                stage.y = event.screenY - prevSceneY
-                stage.height = newHeight
+        stage.scene.apply {
+            releaseListener?.let {
+                removeEventFilter(MouseEvent.MOUSE_RELEASED, releaseListener)
             }
-            if (newWidth > stage.minWidth) {
-                stage.x = event.screenX - prevSceneX
-                stage.width = newWidth
+            removeEventFilter(MouseEvent.MOUSE_PRESSED, pressListener)
+            removeEventFilter(MouseEvent.MOUSE_MOVED, moveListener)
+            currentDragListener?.let {
+                removeEventFilter(MouseEvent.MOUSE_DRAGGED, it)
             }
-        }
-        listeners[Cursor.NE_RESIZE] = EventHandler { event: MouseEvent ->
-            val newWidth = prevStageWidth - (event.screenX - prevScreenX)
-            val newHeight = prevStageHeight + (event.screenY - prevScreenY)
-            if (newHeight > stage.minHeight) stage.height = newHeight
-            if (newWidth > stage.minWidth) {
-                stage.x = event.screenX - prevSceneX
-                stage.width = newWidth
-            }
-        }
-        listeners[Cursor.SW_RESIZE] = EventHandler { event: MouseEvent ->
-            val newWidth = prevStageWidth + (event.screenX - prevScreenX)
-            val newHeight = prevStageHeight - (event.screenY - prevScreenY)
-            if (newHeight > stage.minHeight) {
-                stage.height = newHeight
-                stage.y = event.screenY - prevSceneY
-            }
-            if (newWidth > stage.minWidth) stage.width = newWidth
-        }
-        listeners[Cursor.SE_RESIZE] = EventHandler { event: MouseEvent ->
-            val newWidth = prevStageWidth + (event.screenX - prevScreenX)
-            val newHeight = prevStageHeight + (event.screenY - prevScreenY)
-            if (newHeight > stage.minHeight) stage.height = newHeight
-            if (newWidth > stage.minWidth) stage.width = newWidth
-        }
-        listeners[Cursor.E_RESIZE] = EventHandler { event: MouseEvent ->
-            val newWidth = prevStageWidth - (event.screenX - prevScreenX)
-            if (newWidth > stage.minWidth) {
-                stage.x = event.screenX - prevSceneX
-                stage.width = newWidth
-            }
-        }
-        listeners[Cursor.W_RESIZE] = EventHandler { event: MouseEvent ->
-            val newWidth = prevStageWidth + (event.screenX - prevScreenX)
-            if (newWidth > stage.minWidth) stage.width = newWidth
-        }
-        listeners[Cursor.N_RESIZE] = EventHandler { event: MouseEvent ->
-            val newHeight = prevStageHeight - (event.screenY - prevScreenY)
-            if (newHeight > stage.minHeight) {
-                stage.y = event.screenY - prevSceneY
-                stage.height = newHeight
-            }
-        }
-        listeners[Cursor.S_RESIZE] = EventHandler { event: MouseEvent ->
-            val newHeight = prevStageHeight + (event.screenY - prevScreenY)
-            if (newHeight > stage.minHeight && isInScreen(event.screenX, event.screenY)) stage.height = newHeight
         }
     }
 
-    private fun launch() {
-        stage.scene.setOnMouseReleased {
-            if (hasSizeChanged) {
-                persistPosition?.invoke(stage.x, stage.y, stage.width, stage.height)
-                hasSizeChanged = false
+    private fun setCursor(cursor: Cursor, dragListener: EventHandler<MouseEvent>?) = stage.scene.apply {
+        if (this.cursor === cursor) return@apply
+        this.cursor = cursor
+        currentDragListener?.let {
+            removeEventFilter(MouseEvent.MOUSE_DRAGGED, it)
+        }
+        currentDragListener = if (cursor === Cursor.DEFAULT) {
+            releaseListener?.let {
+                removeEventFilter(MouseEvent.MOUSE_RELEASED, releaseListener)
             }
-        }
-        stage.scene.setOnMousePressed { event: MouseEvent ->
-            if (stage.scene.cursor === Cursor.DEFAULT) return@setOnMousePressed
-            prevSceneX = event.sceneX
-            prevSceneY = event.sceneY
-            prevScreenX = event.screenX
-            prevScreenY = event.screenY
-            prevStageWidth = stage.width
-            prevStageHeight = stage.height
-            hasSizeChanged = true
-        }
-        stage.scene.setOnMouseMoved { event: MouseEvent ->
-            val sx = event.sceneX
-            val sy = event.sceneY
-            val leftTrigger = sx > 0 && sx < resizeArea
-            val rightTrigger = sx < stage.scene.width && sx > stage.scene.width - resizeArea
-            val upperTrigger = sy < stage.scene.height && sy > stage.scene.height - resizeArea
-            val lowerTrigger = sy > 0 && sy < resizeArea
-
-            if (leftTrigger && lowerTrigger) fireAction(Cursor.NW_RESIZE)
-            else if (leftTrigger && upperTrigger) fireAction(Cursor.NE_RESIZE)
-            else if (rightTrigger && lowerTrigger) fireAction(Cursor.SW_RESIZE)
-            else if (rightTrigger && upperTrigger) fireAction(Cursor.SE_RESIZE)
-            else if (leftTrigger) fireAction(Cursor.E_RESIZE)
-            else if (rightTrigger) fireAction(Cursor.W_RESIZE)
-            else if (lowerTrigger) fireAction(Cursor.N_RESIZE)
-            else if (upperTrigger && sy >= resizeArea) fireAction(Cursor.S_RESIZE)
-            else fireAction(Cursor.DEFAULT)
+            removeEventFilter(MouseEvent.MOUSE_PRESSED, pressListener)
+            null
+        } else {
+            releaseListener?.let {
+                addEventFilter(MouseEvent.MOUSE_RELEASED, it)
+            }
+            addEventFilter(MouseEvent.MOUSE_PRESSED, pressListener)
+            addEventFilter(MouseEvent.MOUSE_DRAGGED, dragListener)
+            dragListener
         }
     }
 
-    private fun fireAction(cursor: Cursor) {
-        stage.scene.cursor = cursor
-        if (cursor !== Cursor.DEFAULT) stage.scene.onMouseDragged = listeners[cursor]
-        else stage.scene.onMouseDragged = null
-    }
 }
+

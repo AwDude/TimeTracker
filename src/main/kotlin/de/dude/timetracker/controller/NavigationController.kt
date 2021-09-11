@@ -3,7 +3,6 @@ package de.dude.timetracker.controller
 import de.dude.library.action.ActionBus
 import de.dude.library.javafx.LayoutHelper
 import de.dude.library.javafx.canDragWindow
-import de.dude.library.javafx.getBundle
 import de.dude.timetracker.action.AppAction
 import de.dude.timetracker.action.LifeCycleAction
 import de.dude.timetracker.action.NavigationAction
@@ -13,10 +12,8 @@ import javafx.scene.Parent
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.layout.Pane
-import java.util.*
-import kotlin.collections.ArrayDeque
 
-class NavigationController : LifeCycleAction, NavigationAction {
+class NavigationController : ViewController(), LifeCycleAction, NavigationAction {
 
     @FXML
     private lateinit var dragContainer: Node
@@ -33,15 +30,10 @@ class NavigationController : LifeCycleAction, NavigationAction {
     @FXML
     private lateinit var settingsButton: Button
 
-    private val bundle: ResourceBundle by lazy { getBundle("strings.navigation") }
     private val history = ArrayDeque<Parent>()
 
-    init {
+    override fun onCreate() {
         ActionBus.hook(this)
-    }
-
-    @FXML
-    private fun initialize() {
         dragContainer.canDragWindow()
         goTo("times")
     }
@@ -50,7 +42,7 @@ class NavigationController : LifeCycleAction, NavigationAction {
     private fun exit() = ActionBus.call<AppAction> { exit() }
 
     @FXML
-    private fun goBack() {
+    fun goBack() {
         history.removeLast()
         viewContainer.children[0] = history.last()
         updateNavigationButtons()
@@ -59,13 +51,11 @@ class NavigationController : LifeCycleAction, NavigationAction {
     @FXML
     private fun goToSettings() = goTo("settings")
 
-    override fun goTo(layoutName: String) {
-        LayoutHelper.load(layoutName).also { view ->
-            destinationTitle.text = bundle.getString("destination.$layoutName.title")
-            viewContainer.children[0] = view
-            history.add(view)
-            updateNavigationButtons()
-        }
+    override fun goTo(layoutName: String) = LayoutHelper.load(layoutName).view.let { view ->
+        destinationTitle.text = resources?.getString("destination.$layoutName.title") ?: ""
+        viewContainer.children[0] = view
+        history.add(view)
+        updateNavigationButtons()
     }
 
     private fun updateNavigationButtons() {

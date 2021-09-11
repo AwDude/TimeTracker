@@ -11,7 +11,7 @@ object LayoutHelper {
 
     private val generalCss = getResource("/styles/general.css")!!.toExternalForm()
 
-    fun load(layoutName: String): Parent {
+    fun load(layoutName: String): Layout {
         val bundle = tryDo { getBundle("strings.$layoutName") }
         val loader = FXMLLoader(getResource("/layouts/$layoutName.fxml"), bundle)
         val view = loader.load<Parent>() ?: throw MissingResourceException(
@@ -20,18 +20,26 @@ object LayoutHelper {
             "/layouts/$layoutName.fxml"
         )
         addStyles(view, layoutName)
-        setOnCloseListener(view, loader)
-        return view
+        return Layout(view, loader.getController<ViewController>())
     }
 
     private fun addStyles(view: Parent, name: String) = view.stylesheets.apply {
         add(generalCss)
-        getResource("/styles/$name.css")?.toExternalForm()?.let { add(it) }
+        getResource("/styles/$name.css")?.let { add(it.toExternalForm()) }
     }
 
     private fun getResource(name: String) = LayoutHelper::class.java.getResource(name)
 
-    private fun setOnCloseListener(view: Parent, loader: FXMLLoader) = loader.getController<ViewController>()?.apply {
+}
+
+class Layout(val view: Parent, private val controller: ViewController?) {
+
+    init { setOnCloseListener() }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getController(): T? = controller as T
+
+    private fun setOnCloseListener() = controller?.apply {
         lateinit var listener: ChangeListener<Parent>
         listener = ChangeListener<Parent> { _, _, container ->
             if (container == null) {

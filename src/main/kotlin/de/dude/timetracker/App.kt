@@ -1,32 +1,25 @@
 package de.dude.timetracker
 
-import de.dude.library.action.ActionBus
 import de.dude.library.javafx.CleanStage
-import de.dude.timetracker.action.LifeCycleAction
+import de.dude.library.javafx.CleanStageApp
+import de.dude.library.javafx.LayoutHelper
 import de.dude.timetracker.controller.MainController
-import javafx.application.Application
-import javafx.application.Platform
-import javafx.stage.Stage
-import javafx.stage.StageStyle
+import de.dude.timetracker.repository.Defaults
+import javafx.scene.Scene
 
-class App : Application() {
+class App : CleanStageApp() {
 
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) = launch(App::class.java, *args)
-    }
-
-    override fun start(primaryStage: Stage) {
-        //ActionBus.log = ::println
-        primaryStage.apply {
-            initStyle(StageStyle.UTILITY)
-            opacity = 0.0
-            setOnHidden { Platform.exit() }
-            show()
+    override fun onStageCreated(stage: CleanStage) {
+        stage.apply {
+            isHideOnFocusLoss = true
+            isAlwaysOnTop = true
+            minWidth = Defaults.STAGE_MIN_WIDTH
+            minHeight = Defaults.STAGE_MIN_HEIGHT
+            scene = Scene(LayoutHelper.load("navigation").view)
+            enablePersistPosition("TIME_TRACKER_WINDOW")
+            enableResizeable(8)
         }
-        MainController(CleanStage(primaryStage))
+        MainController.init(stage)
     }
-
-    override fun stop() = ActionBus.call<LifeCycleAction> { onExit() }
 
 }

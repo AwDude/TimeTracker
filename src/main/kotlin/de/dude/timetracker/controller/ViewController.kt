@@ -16,7 +16,7 @@ open class ViewController : Initializable {
         onCreate()
     }
 
-    protected fun goTo(layoutName: String) = ActionBus.call<NavigationAction> {
+    protected open fun goTo(layoutName: String) = ActionBus.call<NavigationAction> {
         goTo(layoutName)
     }
 

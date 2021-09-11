@@ -1,38 +1,30 @@
 package de.dude.timetracker.controller
 
 import de.dude.library.action.ActionBus
-import de.dude.library.javafx.StageResizeHelper
 import de.dude.timetracker.TrayService
 import de.dude.timetracker.action.AppAction
 import de.dude.timetracker.action.LifeCycleAction
 import de.dude.timetracker.action.TrayAction
 import de.dude.timetracker.view.Dialog
 import javafx.application.Platform
-import javafx.fxml.FXMLLoader
-import javafx.scene.Scene
 import javafx.stage.Stage
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 
 private const val MIN_IN_MS = 100L//60000L
 
-class MainController(private val stage: Stage) : LifeCycleAction, TrayAction, AppAction {
+object MainController : LifeCycleAction, TrayAction, AppAction {
 
     private val trayService = TrayService()
+    private lateinit var stage: Stage
 
     @Volatile
     private var totalMinutes = 0
     private var timer: Timer? = null
 
-    init {
+    fun init(stage: Stage) {
+        this.stage = stage
         ActionBus.hook(this)
-        initStage()
-    }
-
-    private fun initStage() {
-        val loader = FXMLLoader(javaClass.getResource("/layouts/navigation.fxml"))
-        stage.scene = Scene(loader.load())
-        StageResizeHelper(stage, 4)
     }
 
     private fun showStage() {
