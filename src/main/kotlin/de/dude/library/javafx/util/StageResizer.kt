@@ -1,5 +1,6 @@
-package de.dude.library.javafx
+package de.dude.library.javafx.util
 
+import de.dude.library.javafx.isInScreen
 import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
 import javafx.scene.Cursor
@@ -7,7 +8,7 @@ import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
 
-class StageResizeHelper(
+class StageResizer(
     private val stage: Stage, resizeArea: Int,
     onPersistPosition: ((x: Double, y: Double, width: Double, height: Double) -> Unit)? = null
 ) {

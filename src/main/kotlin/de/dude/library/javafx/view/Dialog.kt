@@ -1,4 +1,4 @@
-package de.dude.library.javafx
+package de.dude.library.javafx.view
 
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType

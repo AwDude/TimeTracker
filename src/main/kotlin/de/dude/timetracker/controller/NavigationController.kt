@@ -1,10 +1,10 @@
 package de.dude.timetracker.controller
 
 import de.dude.library.action.ActionBus
-import de.dude.library.javafx.Layout
+import de.dude.library.javafx.action.LifeCycleAction
 import de.dude.library.javafx.canDragWindow
+import de.dude.library.javafx.util.Layout
 import de.dude.timetracker.action.AppAction
-import de.dude.timetracker.action.LifeCycleAction
 import de.dude.timetracker.action.NavigationAction
 import javafx.fxml.FXML
 import javafx.scene.Node

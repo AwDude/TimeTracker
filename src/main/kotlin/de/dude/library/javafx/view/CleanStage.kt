@@ -1,6 +1,9 @@
-package de.dude.library.javafx
+package de.dude.library.javafx.view
 
 import de.dude.library.extension.noneNull
+import de.dude.library.javafx.getTaskBarHeight
+import de.dude.library.javafx.isInScreen
+import de.dude.library.javafx.util.StageResizer
 import de.dude.library.repository.LibStore
 import javafx.beans.value.ChangeListener
 import javafx.geometry.Point2D
@@ -22,7 +25,7 @@ class CleanStage : Stage() {
         set(value) = hideOnFocusLoss(value)
 
     private var focusLossListener: ChangeListener<Boolean>? = null
-    private var resizer: StageResizeHelper? = null
+    private var resizer: StageResizer? = null
     private var windowKey: String? = null
 
     init {
@@ -31,7 +34,7 @@ class CleanStage : Stage() {
 
     fun enableResizeable(resizeArea: Int = 4) {
         if (resizer != null) return
-        resizer = StageResizeHelper(this, resizeArea) { x, y, width, height ->
+        resizer = StageResizer(this, resizeArea) { x, y, width, height ->
             windowKey?.let {
                 LibStore.setStageX(it, x)
                 LibStore.setStageY(it, y)

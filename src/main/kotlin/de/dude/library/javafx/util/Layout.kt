@@ -1,6 +1,7 @@
-package de.dude.library.javafx
+package de.dude.library.javafx.util
 
 import de.dude.library.extension.tryDo
+import de.dude.library.javafx.getBundle
 import de.dude.timetracker.controller.ViewController
 import javafx.beans.value.ChangeListener
 import javafx.fxml.FXMLLoader

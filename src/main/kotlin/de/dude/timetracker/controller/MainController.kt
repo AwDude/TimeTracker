@@ -1,10 +1,10 @@
 package de.dude.timetracker.controller
 
 import de.dude.library.action.ActionBus
-import de.dude.library.javafx.Navigator
+import de.dude.library.javafx.action.LifeCycleAction
+import de.dude.library.javafx.view.Navigator
 import de.dude.timetracker.TrayService
 import de.dude.timetracker.action.AppAction
-import de.dude.timetracker.action.LifeCycleAction
 import de.dude.timetracker.action.TrayAction
 import de.dude.timetracker.repository.Layouts
 import de.dude.timetracker.view.Dialog

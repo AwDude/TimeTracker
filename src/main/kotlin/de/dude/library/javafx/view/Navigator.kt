@@ -1,7 +1,10 @@
-package de.dude.library.javafx
+package de.dude.library.javafx.view
 
 import de.dude.library.action.ActionBus
-import de.dude.timetracker.action.LifeCycleAction
+import de.dude.library.javafx.action.LifeCycleAction
+import de.dude.library.javafx.action.NavigatorAction
+import de.dude.library.javafx.runOnUI
+import de.dude.library.javafx.util.Layout
 import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.layout.StackPane

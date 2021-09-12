@@ -1,4 +1,4 @@
-package de.dude.timetracker.action
+package de.dude.library.javafx.action
 
 import de.dude.library.action.ActionBus
 

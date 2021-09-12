@@ -1,7 +1,7 @@
 package de.dude.timetracker
 
 import de.dude.library.javafx.CleanApp
-import de.dude.library.javafx.CleanStage
+import de.dude.library.javafx.view.CleanStage
 import de.dude.timetracker.controller.MainController
 import de.dude.timetracker.repository.Defaults
 

@@ -1,7 +1,7 @@
 package de.dude.timetracker.view
 
-import de.dude.library.javafx.Dialog
 import de.dude.library.javafx.getBundle
+import de.dude.library.javafx.view.Dialog
 import java.util.*
 
 object Dialog {

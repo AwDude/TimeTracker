@@ -1,7 +1,7 @@
 package de.dude.timetracker
 
 import de.dude.library.action.ActionBus
-import de.dude.timetracker.action.LifeCycleAction
+import de.dude.library.javafx.action.LifeCycleAction
 import de.dude.timetracker.action.TrayAction
 import java.awt.*
 import java.awt.event.MouseEvent
