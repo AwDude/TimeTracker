@@ -6,7 +6,7 @@ interface NavigatorAction : ActionBus.Action {
 
     val isHomeShown: Boolean
 
-    var isVisible: Boolean
+    var isShown: Boolean
 
     var isMaximized: Boolean
 
@@ -17,7 +17,5 @@ interface NavigatorAction : ActionBus.Action {
     fun goBack()
 
     fun setHome(layoutName: String)
-
-    fun setMenuBar(layoutName: String)
 
 }

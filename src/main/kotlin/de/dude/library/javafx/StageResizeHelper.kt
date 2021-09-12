@@ -1,7 +1,9 @@
 package de.dude.library.javafx
 
+import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
 import javafx.scene.Cursor
+import javafx.scene.Scene
 import javafx.scene.input.MouseEvent
 import javafx.stage.Stage
 
@@ -124,21 +126,29 @@ class StageResizeHelper(
         if (newHeight > stage.minHeight && isInScreen(event.screenX, event.screenY)) stage.height = newHeight
         event.consume()
     }
+    private val sceneListener = ChangeListener<Scene> { _, oldScene, newScene ->
+        removeListeners(oldScene)
+        newScene.addEventFilter(MouseEvent.MOUSE_MOVED, moveListener)
+    }
 
     init {
-        stage.scene.addEventFilter(MouseEvent.MOUSE_MOVED, moveListener)
+        stage.scene?.addEventFilter(MouseEvent.MOUSE_MOVED, moveListener)
+        stage.sceneProperty().addListener(sceneListener)
     }
 
     fun stop() {
-        stage.scene.apply {
-            releaseListener?.let {
-                removeEventFilter(MouseEvent.MOUSE_RELEASED, releaseListener)
-            }
-            removeEventFilter(MouseEvent.MOUSE_PRESSED, pressListener)
-            removeEventFilter(MouseEvent.MOUSE_MOVED, moveListener)
-            currentDragListener?.let {
-                removeEventFilter(MouseEvent.MOUSE_DRAGGED, it)
-            }
+        stage.sceneProperty().removeListener(sceneListener)
+        removeListeners(stage.scene)
+    }
+
+    private fun removeListeners(scene: Scene?) = scene?.apply {
+        releaseListener?.let {
+            removeEventFilter(MouseEvent.MOUSE_RELEASED, it)
+        }
+        removeEventFilter(MouseEvent.MOUSE_PRESSED, pressListener)
+        removeEventFilter(MouseEvent.MOUSE_MOVED, moveListener)
+        currentDragListener?.let {
+            removeEventFilter(MouseEvent.MOUSE_DRAGGED, it)
         }
     }
 
@@ -150,7 +160,7 @@ class StageResizeHelper(
         }
         currentDragListener = if (cursor === Cursor.DEFAULT) {
             releaseListener?.let {
-                removeEventFilter(MouseEvent.MOUSE_RELEASED, releaseListener)
+                removeEventFilter(MouseEvent.MOUSE_RELEASED, it)
             }
             removeEventFilter(MouseEvent.MOUSE_PRESSED, pressListener)
             null

@@ -1,10 +1,12 @@
 package de.dude.timetracker.controller
 
 import de.dude.library.action.ActionBus
+import de.dude.library.javafx.Navigator
 import de.dude.timetracker.TrayService
 import de.dude.timetracker.action.AppAction
 import de.dude.timetracker.action.LifeCycleAction
 import de.dude.timetracker.action.TrayAction
+import de.dude.timetracker.repository.Layouts
 import de.dude.timetracker.view.Dialog
 import javafx.application.Platform
 import javafx.stage.Stage
@@ -13,22 +15,17 @@ import kotlin.concurrent.scheduleAtFixedRate
 
 private const val MIN_IN_MS = 100L//60000L
 
-object MainController : LifeCycleAction, TrayAction, AppAction {
+class MainController(stage: Stage) : LifeCycleAction, TrayAction, AppAction {
 
     private val trayService = TrayService()
-    private lateinit var stage: Stage
+    private val navi = Navigator(stage, Layouts.TIMES)
 
     @Volatile
     private var totalMinutes = 0
     private var timer: Timer? = null
 
-    fun init(stage: Stage) {
-        this.stage = stage
+    init {
         ActionBus.hook(this)
-    }
-
-    private fun showStage() {
-        Platform.runLater(stage::show)
     }
 
     override fun onClick() {
@@ -36,12 +33,12 @@ object MainController : LifeCycleAction, TrayAction, AppAction {
             startTimer()
         } else {
             stopTimer()
-            showStage()
+            navi.isShown = true
         }
     }
 
     override fun onRightClick() {
-        showStage()
+        navi.isShown = true
     }
 
     private fun startTimer() {
@@ -80,7 +77,6 @@ object MainController : LifeCycleAction, TrayAction, AppAction {
     }
 
     override fun onExit() {
-        stage.hide()
         // TODO Save new times to file
     }
 

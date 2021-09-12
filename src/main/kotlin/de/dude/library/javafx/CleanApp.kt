@@ -7,7 +7,7 @@ import javafx.application.Platform
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 
-abstract class CleanStageApp : Application() {
+abstract class CleanApp : Application() {
 
     protected abstract fun onStageCreated(stage: CleanStage)
 

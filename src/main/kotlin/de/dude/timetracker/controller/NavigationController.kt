@@ -1,7 +1,7 @@
 package de.dude.timetracker.controller
 
 import de.dude.library.action.ActionBus
-import de.dude.library.javafx.LayoutHelper
+import de.dude.library.javafx.Layout
 import de.dude.library.javafx.canDragWindow
 import de.dude.timetracker.action.AppAction
 import de.dude.timetracker.action.LifeCycleAction
@@ -51,7 +51,7 @@ class NavigationController : ViewController(), LifeCycleAction, NavigationAction
     @FXML
     private fun goToSettings() = goTo("settings")
 
-    override fun goTo(layoutName: String) = LayoutHelper.load(layoutName).view.let { view ->
+    override fun goTo(layoutName: String) = Layout.load(layoutName).view.let { view ->
         destinationTitle.text = resources?.getString("destination.$layoutName.title") ?: ""
         viewContainer.children[0] = view
         history.add(view)
