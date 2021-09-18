@@ -1,14 +1,13 @@
 package de.dude.library.javafx.util
 
 import de.dude.library.extension.tryDo
-import de.dude.library.javafx.getBundle
 import de.dude.timetracker.controller.ViewController
 import javafx.beans.value.ChangeListener
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import java.util.*
 
-class Layout(val view: Parent, private val controller: ViewController?) {
+class Layout(val view: Parent, private val controller: Any?) {
 
     companion object {
         private val generalCss = getResource("/styles/general.css")!!.toExternalForm()
@@ -22,7 +21,7 @@ class Layout(val view: Parent, private val controller: ViewController?) {
                 "/layouts/$layoutName.fxml"
             )
             addStyles(view, layoutName)
-            return Layout(view, loader.getController<ViewController>())
+            return Layout(view, loader.getController<Any>())
         }
 
         private fun addStyles(view: Parent, name: String) = view.stylesheets.apply {
@@ -41,14 +40,16 @@ class Layout(val view: Parent, private val controller: ViewController?) {
     fun <T> getController(): T? = controller as T
 
     private fun setOnCloseListener() = controller?.apply {
-        lateinit var listener: ChangeListener<Parent>
-        listener = ChangeListener<Parent> { _, _, container ->
-            if (container == null) {
-                view.parentProperty().removeListener(listener)
-                onClose()
+        if (this is ViewController) {
+            lateinit var listener: ChangeListener<Parent>
+            listener = ChangeListener<Parent> { _, _, container ->
+                if (container == null) {
+                    view.parentProperty().removeListener(listener)
+                    onClose()
+                }
             }
+            view.parentProperty().addListener(listener)
         }
-        view.parentProperty().addListener(listener)
     }
 
 }

@@ -1,6 +1,5 @@
 package de.dude.library.javafx.util
 
-import de.dude.library.javafx.isInScreen
 import javafx.beans.value.ChangeListener
 import javafx.event.EventHandler
 import javafx.scene.Cursor

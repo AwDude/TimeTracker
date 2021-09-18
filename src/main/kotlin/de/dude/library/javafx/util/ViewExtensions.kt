@@ -1,6 +1,4 @@
-@file:Suppress("unused")
-
-package de.dude.library.javafx
+package de.dude.library.javafx.util
 
 import de.dude.timetracker.repository.Defaults
 import de.dude.timetracker.repository.Settings

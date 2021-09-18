@@ -1,9 +1,10 @@
 package de.dude.library.javafx.view
 
 import de.dude.library.extension.noneNull
-import de.dude.library.javafx.getTaskBarHeight
-import de.dude.library.javafx.isInScreen
+import de.dude.library.javafx.util.StageDragger
 import de.dude.library.javafx.util.StageResizer
+import de.dude.library.javafx.util.getTaskBarHeight
+import de.dude.library.javafx.util.isInScreen
 import de.dude.library.repository.LibStore
 import javafx.beans.value.ChangeListener
 import javafx.geometry.Point2D
@@ -13,6 +14,10 @@ import javafx.stage.StageStyle
 
 @Suppress("MemberVisibilityCanBePrivate")
 class CleanStage : Stage() {
+
+    var isDraggable: Boolean
+        get() = dragger != null
+        set(value) = makeDraggable(value)
 
     val isResizeable: Boolean
         get() = resizer != null
@@ -25,6 +30,7 @@ class CleanStage : Stage() {
         set(value) = hideOnFocusLoss(value)
 
     private var focusLossListener: ChangeListener<Boolean>? = null
+    private var dragger: StageDragger? = null
     private var resizer: StageResizer? = null
     private var windowKey: String? = null
 
@@ -33,7 +39,7 @@ class CleanStage : Stage() {
     }
 
     fun enableResizeable(resizeArea: Int = 4) {
-        if (resizer != null) return
+        disableResizeable()
         resizer = StageResizer(this, resizeArea) { x, y, width, height ->
             windowKey?.let {
                 LibStore.setStageX(it, x)
@@ -90,6 +96,21 @@ class CleanStage : Stage() {
             }
         } else {
             focusLossListener?.let { focusedProperty().removeListener(it) }
+        }
+    }
+
+    private fun makeDraggable(isDraggable: Boolean) {
+        dragger = if (isDraggable) {
+            if (dragger != null) return
+            StageDragger(this) { x, y ->
+                windowKey?.let {
+                    LibStore.setStageX(it, x)
+                    LibStore.setStageY(it, y)
+                }
+            }
+        } else {
+            dragger?.stop()
+            null
         }
     }
 

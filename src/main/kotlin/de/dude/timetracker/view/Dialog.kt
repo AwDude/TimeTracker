@@ -1,6 +1,6 @@
 package de.dude.timetracker.view
 
-import de.dude.library.javafx.getBundle
+import de.dude.library.javafx.util.getBundle
 import de.dude.library.javafx.view.Dialog
 import java.util.*
 

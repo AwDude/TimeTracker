@@ -1,7 +1,8 @@
-package de.dude.timetracker
+package de.dude.timetracker.service
 
 import de.dude.library.action.ActionBus
 import de.dude.library.javafx.action.LifeCycleAction
+import de.dude.timetracker.action.TimerAction
 import de.dude.timetracker.action.TrayAction
 import java.awt.*
 import java.awt.event.MouseEvent
@@ -10,16 +11,16 @@ import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 import javax.swing.SwingUtilities
 
+private const val FONT_PROPERTY_KEY = "awt.font.desktophints"
 private const val IDLE_IMAGE_PATH = "/images/timer_icon.png"
 private const val ICON_SIZE = 16
 
-class TrayService : LifeCycleAction {
+class TrayService : LifeCycleAction, TimerAction, Service {
 
     private val idleImage = ImageIO.read(javaClass.getResource(IDLE_IMAGE_PATH))
-    private val trayIconLeft: TrayIcon
-    private var trayIconRight: TrayIcon
-    private val renderConfig = getRenderConfig()
-
+    private val trayIconLeft = createTrayIcon()
+    private val trayIconRight = createTrayIcon()
+    private val renderConfig = Toolkit.getDefaultToolkit().getDesktopProperty(FONT_PROPERTY_KEY) as Map<*, *>
     // TextAttribute.TRACKING, -0.120F maybe useful?
     private val timeFont = Font("Cornerstone", Font.PLAIN, 11)
     private val iconColor = Color(0, 200, 255)
@@ -27,9 +28,13 @@ class TrayService : LifeCycleAction {
 
     init {
         ActionBus.hook(this)
-        trayIconLeft = createTrayIcon()
-        trayIconRight = createTrayIcon()
-        SystemTray.getSystemTray().add(trayIconLeft)
+    }
+
+    override fun start() = SystemTray.getSystemTray().add(trayIconLeft)
+
+    override fun stop() {
+        SystemTray.getSystemTray().remove(trayIconLeft)
+        SystemTray.getSystemTray().remove(trayIconRight)
     }
 
     private fun createTrayIcon() = TrayIcon(idleImage).apply {
@@ -45,10 +50,7 @@ class TrayService : LifeCycleAction {
         })
     }
 
-    private fun getRenderConfig() =
-        Toolkit.getDefaultToolkit().getDesktopProperty("awt.font.desktophints") as Map<*, *>
-
-    fun showTime(minuteText: String, hourText: String?) {
+    private fun showTime(minuteText: String, hourText: String?) {
         if (hourText == null) {
             SystemTray.getSystemTray().remove(trayIconRight)
             hasTwoIcons = false
@@ -103,15 +105,27 @@ class TrayService : LifeCycleAction {
             }
         }
 
-    fun showIdle() {
+    private fun showIdle() {
         SystemTray.getSystemTray().remove(trayIconRight)
         hasTwoIcons = false
         trayIconLeft.image = idleImage
     }
 
-    override fun onExit() {
-        SystemTray.getSystemTray().remove(trayIconLeft)
-        SystemTray.getSystemTray().remove(trayIconRight)
+    override fun onUpdate(hours: Int, minutes: Int) {
+        var hourText: String? = null
+        val minuteText = if (hours > 0) {
+            hourText = hours.toString()
+            String.format("%02d", minutes % 60)
+        } else {
+            String.format("%2s", minutes)
+        }
+        showTime(minuteText, hourText)
     }
+
+    override fun onStop() {
+        showIdle()
+    }
+
+    override fun onExit() = stop()
 
 }

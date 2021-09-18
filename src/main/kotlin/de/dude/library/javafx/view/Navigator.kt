@@ -1,10 +1,13 @@
 package de.dude.library.javafx.view
 
 import de.dude.library.action.ActionBus
+import de.dude.library.extension.void
 import de.dude.library.javafx.action.LifeCycleAction
 import de.dude.library.javafx.action.NavigatorAction
-import de.dude.library.javafx.runOnUI
 import de.dude.library.javafx.util.Layout
+import de.dude.library.javafx.util.runOnUI
+import de.dude.timetracker.controller.ActionbarController
+import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.Scene
 import javafx.scene.layout.StackPane
@@ -15,9 +18,10 @@ class Navigator(private val stage: Stage, homeLayout: String) : NavigatorAction,
 
     private val container = StackPane()
     private val history = LinkedList<Node>()
+    private val overlays = LinkedList<NavigatorOverlay>()
 
     override val isHomeShown: Boolean
-        get() = false
+        get() = history.isEmpty()
 
     // TODO maximize or fullscreen
     override var isMaximized: Boolean
@@ -40,24 +44,39 @@ class Navigator(private val stage: Stage, homeLayout: String) : NavigatorAction,
         }
     }
 
+    fun addOverlay(overlayLayout: String, alignment: Pos) = runOnUI {
+        val layout = Layout.load(overlayLayout)
+        layout.getController<ActionbarController>()?.let { overlay ->
+            overlay.navigator = this
+            overlays.add(overlay)
+        }
+        StackPane.setAlignment(layout.view, alignment)
+        container.children.add(layout.view)
+    }
+
     override fun goTo(layoutName: String) = runOnUI {
         val view = Layout.load(layoutName).view
         val lastView = container.children.set(0, view)
         history.add(lastView)
+        overlays.forEach(NavigatorOverlay::onLayoutChange)
     }
 
     override fun goBackToHome() {
         if (history.isNotEmpty()) {
-            container.children[0] = history[0]
-            history.clear()
+            runOnUI {
+                container.children[0] = history[0]
+                history.clear()
+                overlays.forEach(NavigatorOverlay::onLayoutChange)
+            }
         }
     }
 
-    override fun goBack() = runOnUI {
-        history.removeLastOrNull()?.let {
+    override fun goBack() = history.removeLastOrNull()?.let {
+        runOnUI {
             container.children[0] = it
+            overlays.forEach(NavigatorOverlay::onLayoutChange)
         }
-    }
+    }.void
 
     override fun setHome(layoutName: String) = runOnUI {
         val view = Layout.load(layoutName).view

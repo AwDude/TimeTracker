@@ -5,15 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:id="dragContainer"
-		   fx:controller="de.dude.timetracker.controller.NavigationController" styleClass="container">
-
-	<StackPane fx:id="viewContainer">
-		<Pane/>
-		<StackPane.margin>
-			<Insets top="30"/>
-		</StackPane.margin>
-	</StackPane>
+<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" maxHeight="30"
+		   fx:controller="de.dude.timetracker.controller.ActionbarController" styleClass="container">
 
 	<Button fx:id="backButton" onAction="#goBack" StackPane.alignment="TOP_LEFT" styleClass="cleanButton"
 			maxWidth="26"
