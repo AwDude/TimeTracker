@@ -17,12 +17,11 @@ class MainController(stage: Stage) : LifeCycleAction, TrayAction, AppAction {
 
     private val navi = Navigator(stage, Layouts.TIMES)
     private val timer = TimerService()
-    private val tray = TrayService()
 
     init {
-        ActionBus.hook(this)
+        ActionBus.hookForever(this)
         navi.addOverlay(Layouts.ACTIONBAR, Pos.TOP_CENTER)
-        tray.start()
+        TrayService().start()
     }
 
     override fun onClick() {

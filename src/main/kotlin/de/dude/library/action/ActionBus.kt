@@ -14,7 +14,7 @@ object ActionBus {
     @Volatile
     var log: ((String) -> Unit)? = null
 
-    private val receivers = ConcurrentHashMap<KClass<out Action>, MutableSet<ActionReference<*>>>()
+    private val receivers = ConcurrentHashMap<KClass<out Action>, MutableSet<ActionReference<Action>>>()
 
     inline fun <reified E : Action> call(noinline run: E.() -> Unit) = call(E::class, run)
 
@@ -28,21 +28,31 @@ object ActionBus {
         log?.invoke("Called ${receiverClass.simpleName} on ${receivers[receiverClass]?.map { it.get().className }}")
     }
 
-    fun hook(receiver: Action, vararg receiverClasses: KClass<out Action>) {
-        receiverClasses.forEach { receiverClass ->
-            receivers.compute(receiverClass) { _, set ->
-                (set ?: ConcurrentHashMap.newKeySet()).apply {
-                    add(ActionReference(receiver))
-                }
-            }
-        }
-        log?.invoke("Hooked ${receiver.className} as ${receiverClasses.map { it.simpleName }}")
+    fun hookForever(receiver: Action, vararg receiverClasses: KClass<out Action>) =
+        hookReference(receiver, StrongActionReference(receiver), *receiverClasses)
+
+    fun hookForever(receiver: Action) {
+        @Suppress("UNCHECKED_CAST")
+        val classes = receiver::class.superclasses.filter { it.isSubclassOf(Action::class) } as List<KClass<out Action>>
+        hookForever(receiver, *classes.toTypedArray())
     }
+
+    fun hook(receiver: Action, vararg receiverClasses: KClass<out Action>) =
+        hookReference(receiver, WeakActionReference(receiver), *receiverClasses)
 
     fun hook(receiver: Action) {
         @Suppress("UNCHECKED_CAST")
         val classes = receiver::class.superclasses.filter { it.isSubclassOf(Action::class) } as List<KClass<out Action>>
         hook(receiver, *classes.toTypedArray())
+    }
+
+    private fun hookReference(receiver: Action, ref: ActionReference<Action>, vararg interfaces: KClass<out Action>) {
+        interfaces.forEach { receiverClass ->
+            receivers.compute(receiverClass) { _, set ->
+                (set ?: ConcurrentHashMap.newKeySet()).apply { add(ref) }
+            }
+        }
+        log?.invoke("Hooked ${receiver.className} as ${interfaces.map { it.simpleName }}")
     }
 
     fun unhook(receiver: Action, vararg receiverClasses: KClass<out Action>) =

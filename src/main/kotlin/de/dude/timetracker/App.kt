@@ -7,8 +7,6 @@ import de.dude.timetracker.repository.Defaults
 
 class App : CleanApp() {
 
-    private lateinit var mainController: MainController
-
     override fun onStageCreated(stage: CleanStage) {
         stage.apply {
             isHideOnFocusLoss = true
@@ -19,7 +17,7 @@ class App : CleanApp() {
             enablePersistPosition("TIME_TRACKER_WINDOW")
             enableResizeable(8)
         }
-        mainController = MainController(stage)
+        MainController(stage)
     }
 
 }

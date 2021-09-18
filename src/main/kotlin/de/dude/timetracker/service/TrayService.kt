@@ -27,7 +27,7 @@ class TrayService : LifeCycleAction, TimerAction, Service {
     private var hasTwoIcons = false
 
     init {
-        ActionBus.hook(this)
+        ActionBus.hookForever(this)
     }
 
     override fun start() = SystemTray.getSystemTray().add(trayIconLeft)

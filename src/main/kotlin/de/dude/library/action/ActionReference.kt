@@ -1,11 +1,11 @@
 package de.dude.library.action
 
-import java.lang.ref.WeakReference
+interface ActionReference<T> {
 
-class ActionReference<T>(referent: T) : WeakReference<T>(referent) {
+    fun get(): T?
 
-    override fun equals(other: Any?) = get() != null && other is WeakReference<*> && this.get() == other.get()
+    override fun equals(other: Any?): Boolean
 
-    override fun hashCode() = get()?.hashCode() ?: javaClass.hashCode()
+    override fun hashCode(): Int
 
 }
