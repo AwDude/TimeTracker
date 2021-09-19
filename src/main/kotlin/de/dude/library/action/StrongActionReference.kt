@@ -1,6 +1,6 @@
 package de.dude.library.action
 
-class StrongActionReference<T>(private val referent: T) : ActionReference<T> {
+internal class StrongActionReference<T>(private val referent: T) : ActionReference<T> {
 
     override fun get(): T? = referent
 

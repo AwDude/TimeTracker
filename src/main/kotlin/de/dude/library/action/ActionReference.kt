@@ -1,6 +1,6 @@
 package de.dude.library.action
 
-interface ActionReference<T> {
+internal interface ActionReference<T> {
 
     fun get(): T?
 
