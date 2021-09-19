@@ -6,6 +6,7 @@ import de.dude.library.javafx.util.StageResizer
 import de.dude.library.javafx.util.getTaskBarHeight
 import de.dude.library.javafx.util.isInScreen
 import de.dude.library.repository.LibStore
+import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.geometry.Point2D
 import javafx.stage.Screen
@@ -36,6 +37,16 @@ class CleanStage : Stage() {
 
     init {
         initStyle(StageStyle.UNDECORATED)
+        maximizedProperty().addListener { _, _, isMaximized ->
+            if (isMaximized) {
+                dragger?.stop()
+                resizer?.stop()
+                Platform.runLater { height -= getTaskBarHeight() }
+            } else {
+                dragger?.start()
+                resizer?.start()
+            }
+        }
     }
 
     fun enableResizeable(resizeArea: Int = 4) {

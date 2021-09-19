@@ -1,0 +1,12 @@
+.actionbar {
+    -fx-max-height: 0;
+    -fx-background-color: transparent;
+}
+
+.cleanButton.closeButton:hover {
+    -fx-background-color: color-transparent-red;
+}
+
+.cleanButton.closeButton:pressed {
+    -fx-background-color: color-transparent-strong-red;
+}

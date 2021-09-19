@@ -132,6 +132,10 @@ class StageResizer(
     }
 
     init {
+        start()
+    }
+
+    fun start() {
         stage.scene?.addEventFilter(MouseEvent.MOUSE_MOVED, moveListener)
         stage.sceneProperty().addListener(sceneListener)
     }

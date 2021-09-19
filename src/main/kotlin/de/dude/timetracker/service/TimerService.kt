@@ -10,7 +10,7 @@ import kotlin.concurrent.scheduleAtFixedRate
 
 private const val MIN_IN_MS = 100L//60000L
 
-class TimerService : LifeCycleAction, Service {
+object TimerService : LifeCycleAction, Service {
     @Volatile
     private var totalMinutes = 0
     private var timer: Timer? = null

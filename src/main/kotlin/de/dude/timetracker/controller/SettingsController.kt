@@ -7,6 +7,7 @@ import javafx.scene.control.TextField
 class SettingsController : ViewController() {
 
     /*
+        - language
         - start timer on app start
         - dark or light theme
         - minimize to tray

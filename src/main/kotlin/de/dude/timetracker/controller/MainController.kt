@@ -16,20 +16,19 @@ import javafx.stage.Stage
 class MainController(stage: Stage) : LifeCycleAction, TrayAction, AppAction {
 
     private val navi = Navigator(stage, Layouts.TIMES)
-    private val timer = TimerService()
 
     init {
         ActionBus.hookForever(this)
         navi.addOverlay(Layouts.ACTIONBAR, Pos.TOP_CENTER)
-        TrayService().start()
+        TrayService.start()
     }
 
     override fun onClick() {
-        if (timer.isRunning) {
-            timer.stop()
+        if (TimerService.isRunning) {
+            TimerService.stop()
             navi.isShown = true
         } else {
-            timer.start()
+            TimerService.start()
         }
     }
 
@@ -38,7 +37,7 @@ class MainController(stage: Stage) : LifeCycleAction, TrayAction, AppAction {
     }
 
     override fun exit() {
-        if (!timer.isRunning || Dialog.confirmExit()) Platform.exit()
+        if (!TimerService.isRunning || Dialog.confirmExit()) Platform.exit()
     }
 
     override fun onExit() {

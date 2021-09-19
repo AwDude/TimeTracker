@@ -15,7 +15,7 @@ private const val FONT_PROPERTY_KEY = "awt.font.desktophints"
 private const val IDLE_IMAGE_PATH = "/images/timer_icon.png"
 private const val ICON_SIZE = 16
 
-class TrayService : LifeCycleAction, TimerAction, Service {
+object TrayService : LifeCycleAction, TimerAction, Service {
 
     private val idleImage = ImageIO.read(javaClass.getResource(IDLE_IMAGE_PATH))
     private val trayIconLeft = createTrayIcon()

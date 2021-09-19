@@ -1,44 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" maxHeight="30"
-		   fx:controller="de.dude.timetracker.controller.ActionbarController" styleClass="container">
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<HBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+	  fx:controller="de.dude.timetracker.controller.ActionbarController" styleClass="actionbar" alignment="CENTER">
 
-	<Button fx:id="backButton" onAction="#goBack" StackPane.alignment="TOP_LEFT" styleClass="cleanButton"
-			maxWidth="26"
-			visible="false" managed="false">
+	<Button fx:id="backButton" onAction="#goBack" styleClass="cleanButton" visible="false" managed="false" prefWidth="50">
 		<graphic>
-			<ImageView fitHeight="26.0" pickOnBounds="true" preserveRatio="true">
+			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
 				<Image url="/images/back_icon.png"/>
 			</ImageView>
 		</graphic>
 	</Button>
 
-	<Button fx:id="settingsButton" onAction="#goToSettings" StackPane.alignment="TOP_LEFT" styleClass="cleanButton"
-			maxWidth="22">
+	<Button fx:id="settingsButton" onAction="#goToSettings" styleClass="cleanButton" prefHeight="30" prefWidth="50">
 		<graphic>
-			<ImageView fitHeight="22" pickOnBounds="true" preserveRatio="true">
+			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="24">
 				<Image url="/images/settings_icon.png"/>
 			</ImageView>
 		</graphic>
 	</Button>
 
-	<Label fx:id="destinationTitle" styleClass="h1" StackPane.alignment="TOP_CENTER">
-		<StackPane.margin>
-			<Insets left="30" right="30"/>
-		</StackPane.margin>
-	</Label>
+	<Region HBox.hgrow="ALWAYS"/>
 
-	<Button onAction="#exit" StackPane.alignment="TOP_RIGHT" styleClass="cleanButton" maxWidth="26">
+	<Button onAction="#minimize" styleClass="cleanButton" prefWidth="50">
 		<graphic>
-			<ImageView fitHeight="26" pickOnBounds="true" preserveRatio="true">
+			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
+				<Image url="/images/minimize_icon.png"/>
+			</ImageView>
+		</graphic>
+	</Button>
+
+	<Button fx:id="enterFullScreenButton" onAction="#enterFullScreen" styleClass="cleanButton" prefWidth="50">
+		<graphic>
+			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
+				<Image url="/images/enter_fullscreen_icon.png"/>
+			</ImageView>
+		</graphic>
+	</Button>
+
+	<Button fx:id="exitFullScreenButton" onAction="#exitFullScreen" styleClass="cleanButton" visible="false"
+			managed="false" prefWidth="50">
+		<graphic>
+			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
+				<Image url="/images/exit_fullscreen_icon.png"/>
+			</ImageView>
+		</graphic>
+	</Button>
+
+	<Button onAction="#exit" styleClass="cleanButton, closeButton" prefWidth="50">
+		<graphic>
+			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
 				<Image url="/images/close_icon.png"/>
 			</ImageView>
 		</graphic>
 	</Button>
 
-</StackPane>
+</HBox>

@@ -6,6 +6,10 @@
     color-accent: #059994;
     color-error: #e02d19;
     color-success: #0db826;
+    color-transparent-red: #e02d1960;
+    color-transparent-gray: #75757560;
+    color-transparent-strong-red: #e02d19B0;
+    color-transparent-strong-gray: #757575B0;
 
     -fx-font-family: "Helvetica";
     -fx-text-fill: color-dark;
@@ -111,7 +115,7 @@
 }
 
 .cleanButton {
-    -fx-padding: 0;
+    -fx-padding: 2;
     -fx-font-weight: bold;
     -fx-font-size: 18;
     -fx-background-color: transparent;
@@ -121,11 +125,11 @@
 }
 .cleanButton:hover {
     -fx-text-fill: color-medium;
-    -fx-background-color: transparent;
+    -fx-background-color: color-transparent-gray;
 }
 .cleanButton:pressed {
     -fx-text-fill: color-accent;
-    -fx-background-color: transparent;
+    -fx-background-color: color-transparent-strong-gray;
 }
 
 .container {

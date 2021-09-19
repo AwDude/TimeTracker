@@ -40,6 +40,10 @@ class StageDragger(private val stage: Stage, onPersistPosition: ((x: Double, y: 
     }
 
     init {
+        start()
+    }
+
+    fun start() {
         addListeners(stage.scene)
         stage.sceneProperty().addListener(sceneListener)
     }
