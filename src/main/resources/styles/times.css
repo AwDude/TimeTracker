@@ -1,0 +1,14 @@
+.button {
+    -fx-padding: 0;
+    -fx-pref-width: 90;
+    -fx-max-width: 90;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+    -fx-text-fill: black;
+}
+.button.start {
+    -fx-background-color: color-green;
+}
+.button.stop {
+    -fx-background-color: color-red;
+}

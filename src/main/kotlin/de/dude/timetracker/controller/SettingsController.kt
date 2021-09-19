@@ -7,6 +7,7 @@ import javafx.scene.control.TextField
 class SettingsController : ViewController() {
 
     /*
+        - show breaks in times overview
         - language
         - start timer on app start
         - dark or light theme

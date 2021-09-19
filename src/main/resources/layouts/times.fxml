@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import de.dude.library.javafx.node.ImageButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -9,11 +9,13 @@
 
 	<HBox>
 
+		<ImageButton fx:id="startButton" onAction="#start" styleClass="start" image="/images/start_icon.png"/>
+		<ImageButton fx:id="stopButton" onAction="#stop" styleClass="stop" image="/images/stop_icon.png"/>
+
 	</HBox>
 
 	<ScrollPane>
 
 	</ScrollPane>
-	<Button text="%button.stop" onAction="#stop"/>
 
 </VBox>

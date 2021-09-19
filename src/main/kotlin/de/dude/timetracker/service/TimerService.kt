@@ -23,10 +23,12 @@ object TimerService : LifeCycleAction, Service {
     }
 
     override fun start() {
+        if (timer != null) return
         totalMinutes = -1
         timer = Timer(true).apply {
             scheduleAtFixedRate(0, MIN_IN_MS) { updateTime() }
         }
+        ActionBus.call<TimerAction> { onStart() }
     }
 
     override fun stop() = timer?.apply {

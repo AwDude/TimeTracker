@@ -4,12 +4,14 @@
     color-lite: #e1e6e8;
     color-medium: #55727d;
     color-accent: #059994;
-    color-error: #e02d19;
-    color-success: #0db826;
-    color-transparent-red: #e02d1960;
-    color-transparent-gray: #75757560;
-    color-transparent-strong-red: #e02d19B0;
-    color-transparent-strong-gray: #757575B0;
+
+    color-red: #e02d19;
+    color-green: #0db826;
+
+    transparent-red-faint: #e02d1960;
+    transparent-gray-faint: #75757560;
+    transparent-red-firm: #e02d19B0;
+    transparent-gray-firm: #757575B0;
 
     -fx-font-family: "Helvetica";
     -fx-text-fill: color-dark;
@@ -23,7 +25,7 @@
     -fx-font-weight: normal;
     -fx-font-size: 14;
     -fx-background-color: color-dark;
-    -fx-background-radius: 6;
+    -fx-background-radius: 2;
     -fx-text-fill: white;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
 }
@@ -109,11 +111,6 @@
 
 /* --- --- --- STYLE CLASSES --- --- --- */
 
-.bold {
-    -fx-font-weight: bold;
-    -fx-background-color: transparent;
-}
-
 .cleanButton {
     -fx-padding: 2;
     -fx-font-weight: bold;
@@ -125,11 +122,11 @@
 }
 .cleanButton:hover {
     -fx-text-fill: color-medium;
-    -fx-background-color: color-transparent-gray;
+    -fx-background-color: transparent-gray-faint;
 }
 .cleanButton:pressed {
     -fx-text-fill: color-accent;
-    -fx-background-color: color-transparent-strong-gray;
+    -fx-background-color: transparent-gray-firm;
 }
 
 .container {
@@ -137,30 +134,25 @@
     -fx-background-color: color-background;
 }
 
-.error {
-    -fx-text-fill: color-error;
-    -fx-font-size: 12;
+.textFieldInput {
+    -fx-background-color: color-dark, color-background;
 }
 
+/* --- TEXT FORMAT --- */
 .h1 {
     -fx-font-size: 18;
 }
-
 .h2 {
     -fx-font-size: 16;
 }
-
+.bold {
+    -fx-font-weight: bold;
+}
 .hint {
     -fx-text-fill: color-medium;
     -fx-font-size: 12;
 }
-
-.itemContainer {
-    -fx-padding: 4 8 4 8;
-    -fx-background-radius: 8;
-    -fx-background-color: color-lite;
-}
-
-.textFieldInput {
-    -fx-background-color: color-dark, color-background;
+.error {
+    -fx-text-fill: color-red;
+    -fx-font-size: 12;
 }

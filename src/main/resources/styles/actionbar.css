@@ -4,9 +4,9 @@
 }
 
 .cleanButton.closeButton:hover {
-    -fx-background-color: color-transparent-red;
+    -fx-background-color: transparent-red-faint;
 }
 
 .cleanButton.closeButton:pressed {
-    -fx-background-color: color-transparent-strong-red;
+    -fx-background-color: transparent-red-firm;
 }

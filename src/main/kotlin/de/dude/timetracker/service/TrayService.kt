@@ -1,6 +1,7 @@
 package de.dude.timetracker.service
 
 import de.dude.library.action.ActionBus
+import de.dude.library.extension.void
 import de.dude.library.javafx.action.LifeCycleAction
 import de.dude.timetracker.action.TimerAction
 import de.dude.timetracker.action.TrayAction
@@ -39,13 +40,14 @@ object TrayService : LifeCycleAction, TimerAction, Service {
 
     private fun createTrayIcon() = TrayIcon(idleImage).apply {
         addMouseListener(object : MouseListener {
-            override fun mousePressed(e: MouseEvent?) {}
-            override fun mouseReleased(e: MouseEvent?) {}
-            override fun mouseEntered(e: MouseEvent?) {}
-            override fun mouseExited(e: MouseEvent?) {}
-            override fun mouseClicked(e: MouseEvent?) {
+            override fun mouseEntered(e: MouseEvent?) = void
+            override fun mouseExited(e: MouseEvent?) = void
+            override fun mouseClicked(e: MouseEvent?) = void
+            override fun mousePressed(e: MouseEvent?) {
+                if (SwingUtilities.isRightMouseButton(e)) ActionBus.call<TrayAction> { onRightClick() }
+            }
+            override fun mouseReleased(e: MouseEvent?) {
                 if (SwingUtilities.isLeftMouseButton(e)) ActionBus.call<TrayAction> { onClick() }
-                else if (SwingUtilities.isRightMouseButton(e)) ActionBus.call<TrayAction> { onRightClick() }
             }
         })
     }

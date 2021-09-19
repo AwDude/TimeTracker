@@ -1,61 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import de.dude.library.javafx.node.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <HBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
 	  fx:controller="de.dude.timetracker.controller.ActionbarController" styleClass="actionbar" alignment="CENTER">
 
-	<Button fx:id="backButton" onAction="#goBack" styleClass="cleanButton" visible="false" managed="false" prefWidth="50">
-		<graphic>
-			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
-				<Image url="/images/back_icon.png"/>
-			</ImageView>
-		</graphic>
-	</Button>
+	<ImageButton fx:id="backButton" onAction="#goBack" styleClass="cleanButton" visible="false" managed="false"
+				 prefWidth="40" image="/images/back_icon.png"/>
 
-	<Button fx:id="settingsButton" onAction="#goToSettings" styleClass="cleanButton" prefHeight="30" prefWidth="50">
-		<graphic>
-			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="24">
-				<Image url="/images/settings_icon.png"/>
-			</ImageView>
-		</graphic>
-	</Button>
+	<ImageButton fx:id="settingsButton" onAction="#goToSettings" styleClass="cleanButton" imagePadding="1" prefWidth="40"
+				 image="/images/settings_icon.png"/>
 
 	<Region HBox.hgrow="ALWAYS"/>
 
-	<Button onAction="#minimize" styleClass="cleanButton" prefWidth="50">
-		<graphic>
-			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
-				<Image url="/images/minimize_icon.png"/>
-			</ImageView>
-		</graphic>
-	</Button>
+	<ImageButton onAction="#minimize" styleClass="cleanButton" prefWidth="40" image="/images/minimize_icon.png"/>
 
-	<Button fx:id="enterFullScreenButton" onAction="#enterFullScreen" styleClass="cleanButton" prefWidth="50">
-		<graphic>
-			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
-				<Image url="/images/enter_fullscreen_icon.png"/>
-			</ImageView>
-		</graphic>
-	</Button>
+	<ImageButton fx:id="enterFullScreenButton" onAction="#enterFullScreen" styleClass="cleanButton" prefWidth="40"
+				 image="/images/enter_fullscreen_icon.png"/>
 
-	<Button fx:id="exitFullScreenButton" onAction="#exitFullScreen" styleClass="cleanButton" visible="false"
-			managed="false" prefWidth="50">
-		<graphic>
-			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
-				<Image url="/images/exit_fullscreen_icon.png"/>
-			</ImageView>
-		</graphic>
-	</Button>
+	<ImageButton fx:id="exitFullScreenButton" onAction="#exitFullScreen" styleClass="cleanButton" visible="false"
+				 managed="false" prefWidth="40" image="/images/exit_fullscreen_icon.png"/>
 
-	<Button onAction="#exit" styleClass="cleanButton, closeButton" prefWidth="50">
-		<graphic>
-			<ImageView pickOnBounds="true" preserveRatio="true" fitHeight="26">
-				<Image url="/images/close_icon.png"/>
-			</ImageView>
-		</graphic>
-	</Button>
+	<ImageButton onAction="#exit" styleClass="cleanButton, closeButton" prefWidth="40" image="/images/close_icon.png"/>
 
 </HBox>

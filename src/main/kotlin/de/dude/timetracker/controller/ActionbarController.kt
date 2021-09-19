@@ -2,24 +2,24 @@ package de.dude.timetracker.controller
 
 import de.dude.library.action.ActionBus
 import de.dude.library.extension.void
+import de.dude.library.javafx.node.ImageButton
 import de.dude.library.javafx.view.NavigatorOverlay
 import de.dude.timetracker.action.AppAction
 import javafx.fxml.FXML
-import javafx.scene.control.Button
 
 class ActionbarController : NavigatorOverlay() {
 
     @FXML
-    private lateinit var backButton: Button
+    private lateinit var backButton: ImageButton
 
     @FXML
-    private lateinit var settingsButton: Button
+    private lateinit var settingsButton: ImageButton
 
     @FXML
-    private lateinit var enterFullScreenButton: Button
+    private lateinit var enterFullScreenButton: ImageButton
 
     @FXML
-    private lateinit var exitFullScreenButton: Button
+    private lateinit var exitFullScreenButton: ImageButton
 
     override fun onLayoutChange() = navigator?.apply {
         settingsButton.isVisible = isHomeShown
