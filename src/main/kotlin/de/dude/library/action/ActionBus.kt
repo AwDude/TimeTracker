@@ -31,19 +31,17 @@ object ActionBus {
     fun hookForever(receiver: Action, vararg receiverClasses: KClass<out Action>) =
         hookReference(receiver, StrongActionReference(receiver), *receiverClasses)
 
-    fun hookForever(receiver: Action) {
-        @Suppress("UNCHECKED_CAST")
-        val classes = receiver::class.superclasses.filter { it.isSubclassOf(Action::class) } as List<KClass<out Action>>
-        hookForever(receiver, *classes.toTypedArray())
-    }
+    fun hookForever(receiver: Action) = hookForever(receiver, *extractReceiverClasses(receiver))
 
     fun hook(receiver: Action, vararg receiverClasses: KClass<out Action>) =
         hookReference(receiver, WeakActionReference(receiver), *receiverClasses)
 
-    fun hook(receiver: Action) {
+    fun hook(receiver: Action) = hook(receiver, *extractReceiverClasses(receiver))
+
+    private fun extractReceiverClasses(receiver: Action): Array<KClass<out Action>> {
+        val interfaces = receiver::class.superclasses.filter { it.isSubclassOf(Action::class) }
         @Suppress("UNCHECKED_CAST")
-        val classes = receiver::class.superclasses.filter { it.isSubclassOf(Action::class) } as List<KClass<out Action>>
-        hook(receiver, *classes.toTypedArray())
+        return interfaces.toTypedArray() as Array<KClass<out Action>>
     }
 
     private fun hookReference(receiver: Action, ref: ActionReference<Action>, vararg interfaces: KClass<out Action>) {

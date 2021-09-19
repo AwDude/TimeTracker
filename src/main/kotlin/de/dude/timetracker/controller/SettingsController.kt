@@ -9,8 +9,9 @@ class SettingsController : ViewController() {
     /*
         - start timer on app start
         - dark or light theme
-        - minimize to tray on close
+        - minimize to tray
             - minimized on start up
+            - minimize on focus loss
         - window always on top
         - continue timer while editing
      */
