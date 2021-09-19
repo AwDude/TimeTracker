@@ -2,7 +2,7 @@
 
 package de.dude.library.extension
 
-val Collection<*>?.nullableSize: Int get() = this?.size ?: 0
+inline val Collection<*>?.nullableSize: Int get() = this?.size ?: 0
 
 fun Collection<String>.contains(other: String, ignoreCase: Boolean) = any { it.equals(other, ignoreCase) }
 
