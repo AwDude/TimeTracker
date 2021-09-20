@@ -39,13 +39,13 @@ class Layout(val view: Parent, private val controller: Any?) {
     @Suppress("UNCHECKED_CAST")
     fun <T> getController(): T? = controller as T
 
-    private fun setOnCloseListener() = controller?.apply {
-        if (this is ViewController) {
+    private fun setOnCloseListener() {
+        if (controller is ViewController) {
             lateinit var listener: ChangeListener<Parent>
             listener = ChangeListener<Parent> { _, _, container ->
                 if (container == null) {
                     view.parentProperty().removeListener(listener)
-                    onClose()
+                    controller.onClose()
                 }
             }
             view.parentProperty().addListener(listener)

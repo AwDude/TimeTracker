@@ -7,6 +7,8 @@ import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import kotlin.math.max
 
+private const val DEFAULT_STYLE_CLASS = "image-button"
+
 class ImageButton : Button() {
 
     private val imageView = ImageView().apply {
@@ -33,6 +35,7 @@ class ImageButton : Button() {
         }
 
     init {
+        styleClass.setAll(DEFAULT_STYLE_CLASS)
         bindImageSize()
     }
 

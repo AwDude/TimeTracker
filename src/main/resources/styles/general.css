@@ -5,12 +5,16 @@
     color-medium: #55727d;
     color-accent: #059994;
 
-    color-red: #e02d19;
-    color-green: #0db826;
+    color-red: #e62e19;
+    color-red-faint: #eb5847;
+    color-red-firm: #b82514;
+    color-green: #0dbf28;
+    color-green-faint: #11ee32;
+    color-green-firm: #0a8f1e;
 
     transparent-red-faint: #e02d1960;
     transparent-gray-faint: #75757560;
-    transparent-red-firm: #e02d19B0;
+    transparent-red-firm: #8a1c0f;
     transparent-gray-firm: #757575B0;
 
     -fx-font-family: "Helvetica";
@@ -18,6 +22,21 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
     -fx-focus-traversable: false;
+}
+
+/* --- IMAGE BUTTON ---*/
+.image-button {
+    -fx-background-insets: 0;
+    -fx-alignment: center;
+    -fx-background-color: transparent;
+    -fx-background-radius: null;
+    -fx-effect: null;
+}
+.image-button:hover {
+    -fx-background-color: transparent-gray-faint;
+}
+.image-button:pressed {
+    -fx-background-color: transparent-gray-firm;
 }
 
 /* --- BUTTON --- */
@@ -110,28 +129,22 @@
 }
 
 /* --- --- --- STYLE CLASSES --- --- --- */
-
-.cleanButton {
-    -fx-padding: 2;
-    -fx-font-weight: bold;
-    -fx-font-size: 18;
-    -fx-background-color: transparent;
-    -fx-background-radius: null;
-    -fx-text-fill: color-dark;
-    -fx-effect: null;
-}
-.cleanButton:hover {
-    -fx-text-fill: color-medium;
-    -fx-background-color: transparent-gray-faint;
-}
-.cleanButton:pressed {
-    -fx-text-fill: color-accent;
-    -fx-background-color: transparent-gray-firm;
-}
-
 .container {
-    -fx-padding: 8;
+    -fx-padding: 0 8 8 8;
     -fx-background-color: color-background;
+}
+
+.title {
+    -fx-pref-width: Infinity;
+    -fx-max-width: Infinity;
+    -fx-min-height: 32;
+    -fx-pref-height: 32;
+    -fx-max-height: 32;
+    -fx-padding: 1 116 4 36;
+    -fx-background-color: transparent;
+    -fx-font-size: 16;
+    -fx-text-fill: black;
+    -fx-text-alignment: center;
 }
 
 .textFieldInput {

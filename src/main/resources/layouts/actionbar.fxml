@@ -6,22 +6,19 @@
 <HBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
 	  fx:controller="de.dude.timetracker.controller.ActionbarController" styleClass="actionbar" alignment="CENTER">
 
-	<ImageButton fx:id="backButton" onAction="#goBack" styleClass="cleanButton" visible="false" managed="false"
-				 prefWidth="40" image="/images/back_icon.png"/>
+	<ImageButton fx:id="backButton" onAction="#goBack" visible="false" managed="false" image="/images/back_icon.png"/>
 
-	<ImageButton fx:id="settingsButton" onAction="#goToSettings" styleClass="cleanButton" imagePadding="1" prefWidth="40"
-				 image="/images/settings_icon.png"/>
+	<ImageButton fx:id="settingsButton" onAction="#goToSettings" imagePadding="1" image="/images/settings_icon.png"/>
 
 	<Region HBox.hgrow="ALWAYS"/>
 
-	<ImageButton onAction="#minimize" styleClass="cleanButton" prefWidth="40" image="/images/minimize_icon.png"/>
+	<ImageButton onAction="#minimize" image="/images/minimize_icon.png"/>
 
-	<ImageButton fx:id="enterFullScreenButton" onAction="#enterFullScreen" styleClass="cleanButton" prefWidth="40"
-				 image="/images/enter_fullscreen_icon.png"/>
+	<ImageButton fx:id="enterFullScreenButton" onAction="#enterFullScreen" image="/images/enter_fullscreen_icon.png"/>
 
-	<ImageButton fx:id="exitFullScreenButton" onAction="#exitFullScreen" styleClass="cleanButton" visible="false"
-				 managed="false" prefWidth="40" image="/images/exit_fullscreen_icon.png"/>
+	<ImageButton fx:id="exitFullScreenButton" onAction="#exitFullScreen" image="/images/exit_fullscreen_icon.png"
+				 visible="false" managed="false" />
 
-	<ImageButton onAction="#exit" styleClass="cleanButton, closeButton" prefWidth="40" image="/images/close_icon.png"/>
+	<ImageButton onAction="#exit" styleClass="closeButton" image="/images/close_icon.png"/>
 
 </HBox>

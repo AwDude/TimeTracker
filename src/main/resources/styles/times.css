@@ -2,13 +2,27 @@
     -fx-padding: 0;
     -fx-pref-width: 90;
     -fx-max-width: 90;
-    -fx-pref-height: 40;
-    -fx-max-height: 40;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
     -fx-text-fill: black;
 }
 .button.start {
     -fx-background-color: color-green;
 }
+.button.start:hover {
+    -fx-background-color: color-green-faint;
+}
+.button.start:pressed {
+     -fx-background-color: color-green-firm;
+}
 .button.stop {
     -fx-background-color: color-red;
+}
+.button.stop:hover {
+    -fx-background-color: color-red-faint;
+}
+.button.stop:pressed {
+     -fx-background-color: color-red-firm;
 }

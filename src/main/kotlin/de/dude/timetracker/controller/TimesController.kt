@@ -42,7 +42,7 @@ class TimesController : ViewController(), TimerAction {
     }
 
     override fun onUpdate(hours: Int, minutes: Int) = runOnUI {
-        stopButton.text = String.format("$hours:%02d", minutes)
+        stopButton.text = String.format("%3s:%02d", hours, minutes)
         //stopButton.text = if (hours > 0) String.format("$hours:%02d", minutes % 60) else minutes.toString()
     }
 }

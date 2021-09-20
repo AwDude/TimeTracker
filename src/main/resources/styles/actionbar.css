@@ -1,12 +1,19 @@
 .actionbar {
-    -fx-max-height: 0;
+    -fx-max-height: 28;
+    -fx-pref-height: 28;
     -fx-background-color: transparent;
 }
 
-.cleanButton.closeButton:hover {
+.image-button {
+    -fx-padding: 2;
+    -fx-pref-width: 40;
+    -fx-max-width: 40;
+    -fx-max-height: Infinity;
+    -fx-pref-height: Infinity;
+}
+.image-button.closeButton:hover {
     -fx-background-color: transparent-red-faint;
 }
-
-.cleanButton.closeButton:pressed {
+.image-button.closeButton:pressed {
     -fx-background-color: transparent-red-firm;
 }
