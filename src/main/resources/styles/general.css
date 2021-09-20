@@ -132,6 +132,7 @@
 .container {
     -fx-padding: 0 8 8 8;
     -fx-background-color: color-background;
+    -fx-alignment: top-center;
 }
 
 .title {
@@ -144,7 +145,7 @@
     -fx-background-color: transparent;
     -fx-font-size: 16;
     -fx-text-fill: black;
-    -fx-text-alignment: center;
+    -fx-alignment: center;
 }
 
 .textFieldInput {
