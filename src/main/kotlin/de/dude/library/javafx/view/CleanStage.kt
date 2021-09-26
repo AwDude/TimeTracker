@@ -1,11 +1,11 @@
 package de.dude.library.javafx.view
 
-import de.dude.library.extension.noneNull
 import de.dude.library.javafx.util.StageDragger
 import de.dude.library.javafx.util.StageResizer
 import de.dude.library.javafx.util.getTaskBarHeight
 import de.dude.library.javafx.util.isInScreen
 import de.dude.library.repository.LibStore
+import de.dude.library.util.noneNull
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.geometry.Point2D

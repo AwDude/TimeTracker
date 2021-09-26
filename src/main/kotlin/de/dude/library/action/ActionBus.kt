@@ -1,6 +1,6 @@
 package de.dude.library.action
 
-import de.dude.library.extension.className
+import de.dude.library.util.className
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf

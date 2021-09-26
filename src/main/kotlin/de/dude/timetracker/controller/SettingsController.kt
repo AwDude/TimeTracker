@@ -7,6 +7,8 @@ import javafx.scene.control.TextField
 class SettingsController : ViewController() {
 
     /*
+        - uploading times via jira and Tempo api
+        - floor times when uploading
         - show breaks in times overview
         - language
         - start timer on app start

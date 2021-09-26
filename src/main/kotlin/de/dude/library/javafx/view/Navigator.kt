@@ -1,12 +1,11 @@
 package de.dude.library.javafx.view
 
 import de.dude.library.action.ActionBus
-import de.dude.library.extension.void
 import de.dude.library.javafx.action.LifeCycleAction
 import de.dude.library.javafx.action.NavigatorAction
 import de.dude.library.javafx.util.Layout
 import de.dude.library.javafx.util.runOnUI
-import de.dude.timetracker.controller.ActionbarController
+import de.dude.library.util.void
 import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.Scene
@@ -46,7 +45,7 @@ class Navigator(private val stage: Stage, homeLayout: String) : NavigatorAction,
 
     fun addOverlay(overlayLayout: String, alignment: Pos) = runOnUI {
         val layout = Layout.load(overlayLayout)
-        layout.getController<ActionbarController>()?.let { overlay ->
+        layout.getController<NavigatorOverlay>()?.let { overlay ->
             overlay.navigator = this
             overlays.add(overlay)
         }

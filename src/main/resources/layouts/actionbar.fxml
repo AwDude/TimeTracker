@@ -17,7 +17,7 @@
 	<ImageButton fx:id="enterFullScreenButton" onAction="#enterFullScreen" image="/images/enter_fullscreen_icon.png"/>
 
 	<ImageButton fx:id="exitFullScreenButton" onAction="#exitFullScreen" image="/images/exit_fullscreen_icon.png"
-				 visible="false" managed="false" />
+				 visible="false" managed="false"/>
 
 	<ImageButton onAction="#exit" styleClass="closeButton" image="/images/close_icon.png"/>
 

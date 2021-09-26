@@ -6,22 +6,22 @@
     color-accent: #059994;
 
     color-red: #e62e19;
-    color-red-faint: #eb5847;
-    color-red-firm: #b82514;
     color-green: #0dbf28;
-    color-green-faint: #11ee32;
-    color-green-firm: #0a8f1e;
 
     transparent-red-faint: #e02d1960;
-    transparent-gray-faint: #75757560;
     transparent-red-firm: #8a1c0f;
+    transparent-gray-faint: #75757560;
     transparent-gray-firm: #757575B0;
+    transparent-black-faint: #00000055;
+    transparent-black-firm: #00000099;
 
     -fx-font-family: "Helvetica";
     -fx-text-fill: color-dark;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
     -fx-focus-traversable: false;
+
+    size-actionbar-height: 28;
 }
 
 /* --- IMAGE BUTTON ---*/
@@ -46,7 +46,7 @@
     -fx-background-color: color-dark;
     -fx-background-radius: 2;
     -fx-text-fill: white;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 1);
+    -fx-effect: dropshadow(three-pass-box, transparent-black-firm, 6, 0, 0, 1);
 }
 .button:hover {
      -fx-background-color: color-medium;
@@ -129,8 +129,15 @@
 }
 
 /* --- --- --- STYLE CLASSES --- --- --- */
+
+.layout {
+    -fx-background-color: color-background;
+    -fx-alignment: top-center;
+    -fx-padding: 0 0 6 0;
+}
+
 .container {
-    -fx-padding: 0 8 8 8;
+    -fx-padding: 2 8 2 8;
     -fx-background-color: color-background;
     -fx-alignment: top-center;
 }
@@ -138,14 +145,15 @@
 .title {
     -fx-pref-width: Infinity;
     -fx-max-width: Infinity;
-    -fx-min-height: 32;
-    -fx-pref-height: 32;
-    -fx-max-height: 32;
-    -fx-padding: 1 116 4 36;
-    -fx-background-color: transparent;
+    -fx-min-height: size-actionbar-height;
+    -fx-pref-height: size-actionbar-height;
+    -fx-max-height: size-actionbar-height;
+    -fx-padding: 1 116 0 36;
+    -fx-background-color: color-background;
     -fx-font-size: 16;
     -fx-text-fill: black;
     -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, transparent-black-faint, 6, 0, 0, 1);
 }
 
 .textFieldInput {

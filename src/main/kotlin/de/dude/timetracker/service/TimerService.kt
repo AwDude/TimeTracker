@@ -1,8 +1,8 @@
 package de.dude.timetracker.service
 
 import de.dude.library.action.ActionBus
-import de.dude.library.extension.void
 import de.dude.library.javafx.action.LifeCycleAction
+import de.dude.library.util.void
 import de.dude.timetracker.action.TimerAction
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate

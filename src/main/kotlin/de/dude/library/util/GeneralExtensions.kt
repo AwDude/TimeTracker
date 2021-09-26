@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package de.dude.library.extension
+package de.dude.library.util
 
 inline val Any?.className: String get() = this?.let { it::class.simpleName } ?: "null"
 

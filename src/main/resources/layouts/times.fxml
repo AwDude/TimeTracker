@@ -5,18 +5,18 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" styleClass="container"
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" styleClass="layout"
 	  fx:controller="de.dude.timetracker.controller.TimesController" spacing="4">
 
 	<Label text="%title" styleClass="title"/>
 
-	<HBox>
+	<HBox styleClass="container">
 		<ImageButton fx:id="startButton" onAction="#start" styleClass="button, start" image="/images/start_icon.png"/>
 		<ImageButton fx:id="stopButton" onAction="#stop" styleClass="button, stop" image="/images/stop_icon_cropped.png"
 					 imagePadding="13" graphicTextGap="2"/>
 	</HBox>
 
-	<ScrollPane>
+	<ScrollPane styleClass="container">
 
 	</ScrollPane>
 

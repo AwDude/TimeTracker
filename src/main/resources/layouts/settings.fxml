@@ -2,12 +2,12 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" styleClass="container"
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" styleClass="layout"
 	  fx:controller="de.dude.timetracker.controller.SettingsController" spacing="4">
 
 	<Label text="%title" styleClass="title"/>
 
-	<ScrollPane fitToWidth="true" fitToHeight="true">
+	<ScrollPane fitToWidth="true" fitToHeight="true" styleClass="container">
 
 		<VBox spacing="8" alignment="TOP_CENTER">
 

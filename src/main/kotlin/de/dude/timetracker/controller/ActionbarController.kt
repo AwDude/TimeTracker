@@ -1,9 +1,9 @@
 package de.dude.timetracker.controller
 
 import de.dude.library.action.ActionBus
-import de.dude.library.extension.void
 import de.dude.library.javafx.node.ImageButton
 import de.dude.library.javafx.view.NavigatorOverlay
+import de.dude.library.util.void
 import de.dude.timetracker.action.AppAction
 import javafx.fxml.FXML
 

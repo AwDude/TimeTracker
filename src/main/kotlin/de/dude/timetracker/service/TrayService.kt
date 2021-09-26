@@ -1,8 +1,8 @@
 package de.dude.timetracker.service
 
 import de.dude.library.action.ActionBus
-import de.dude.library.extension.void
 import de.dude.library.javafx.action.LifeCycleAction
+import de.dude.library.util.void
 import de.dude.timetracker.action.TimerAction
 import de.dude.timetracker.action.TrayAction
 import java.awt.*
@@ -18,12 +18,12 @@ private const val ICON_SIZE = 16
 
 object TrayService : LifeCycleAction, TimerAction, Service {
 
+    // TextAttribute.TRACKING, -0.120F maybe useful?
+    private val timeFont = Font("Cornerstone", Font.PLAIN, 11)
     private val idleImage = ImageIO.read(javaClass.getResource(IDLE_IMAGE_PATH))
     private val trayIconLeft = createTrayIcon()
     private val trayIconRight = createTrayIcon()
     private val renderConfig = Toolkit.getDefaultToolkit().getDesktopProperty(FONT_PROPERTY_KEY) as Map<*, *>
-    // TextAttribute.TRACKING, -0.120F maybe useful?
-    private val timeFont = Font("Cornerstone", Font.PLAIN, 11)
     private val iconColor = Color(0, 200, 255)
     private var hasTwoIcons = false
 
@@ -31,7 +31,9 @@ object TrayService : LifeCycleAction, TimerAction, Service {
         ActionBus.hookForever(this)
     }
 
-    override fun start() = SystemTray.getSystemTray().add(trayIconLeft)
+    override fun start() = SystemTray.getSystemTray().apply {
+        if (!trayIcons.contains(trayIconLeft)) add(trayIconLeft)
+    }.void
 
     override fun stop() {
         SystemTray.getSystemTray().remove(trayIconLeft)
