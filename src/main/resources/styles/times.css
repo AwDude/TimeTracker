@@ -1,10 +1,12 @@
 .button {
     -fx-padding: 0;
+    -fx-min-width: 90;
     -fx-pref-width: 90;
     -fx-max-width: 90;
-    -fx-pref-height: 44;
-    -fx-max-height: 44;
-    -fx-font-size: 18;
+    -fx-min-height: 30;
+    -fx-pref-height: 50;
+    -fx-max-height: 50;
+    -fx-font-size: 17;
     -fx-font-weight: bold;
     -fx-text-fill: black;
 }
@@ -25,4 +27,8 @@
 }
 .button.stop:pressed {
     -fx-background-color: derive(color-red, -30%);
+}
+
+.scroll-bar:vertical {
+    -fx-padding: 12 2 12 -4;
 }

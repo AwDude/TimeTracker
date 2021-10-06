@@ -1,7 +1,7 @@
 .actionbar {
-    -fx-min-height: size-actionbar-height;
-    -fx-max-height: size-actionbar-height;
-    -fx-pref-height: size-actionbar-height;
+    -fx-min-height: 28;
+    -fx-max-height: 28;
+    -fx-pref-height: 28;
     -fx-background-color: transparent;
 }
 

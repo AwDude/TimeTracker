@@ -15,7 +15,7 @@ class App : CleanApp() {
             minWidth = Defaults.STAGE_MIN_WIDTH
             minHeight = Defaults.STAGE_MIN_HEIGHT
             enablePersistPosition("TIME_TRACKER_WINDOW")
-            enableResizeable()
+            enableResizeable(6)
         }
         MainController(stage)
     }
