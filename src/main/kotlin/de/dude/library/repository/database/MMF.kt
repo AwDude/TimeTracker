@@ -22,6 +22,8 @@ class MMF {
         val text = "123 Test".encodeToByteArray()
         log("text bytes = ${text.size}")
 
+
+
         buffer.put(SIZE - text.size, text)
         log("wrote bytes")
         move(text.size, SIZE - text.size, 0)

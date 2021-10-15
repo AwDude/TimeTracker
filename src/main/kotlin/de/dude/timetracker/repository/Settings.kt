@@ -1,6 +1,6 @@
 package de.dude.timetracker.repository
 
-import de.dude.library.repository.Storage
+import de.dude.library.repository.settings.Storage
 
 
 object Settings : Storage() {

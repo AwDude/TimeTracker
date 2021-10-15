@@ -1,4 +1,4 @@
-package de.dude.library.repository
+package de.dude.library.repository.settings
 
 import java.util.prefs.Preferences
 
