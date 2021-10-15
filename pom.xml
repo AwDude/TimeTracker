@@ -61,7 +61,7 @@
 	<build>
 		<sourceDirectory>src/main/kotlin</sourceDirectory>
 		<plugins>
-			 <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
@@ -74,32 +74,27 @@
 				<artifactId>javafx-maven-plugin</artifactId>
 				<version>0.0.5</version>
 				<configuration>
-					<release>${java.version}</release>
-					<launcher>launcher</launcher>
 					<mainClass>de.dude.timetracker.App</mainClass>
-					<!--NEEDED FOR MODULARITY
-					<includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
-					<jlinkImageName>ExcelAnalyser</jlinkImageName>
-					<mainClass>de.dude.ExcelAnalyser/de.dude.timetracker.App</mainClass>-->
 				</configuration>
-				<!-- FOR DEBUGGING -->
-<!--				<executions>
-					<execution>
-						<id>run</id>
-						<configuration>
-							<mainClass>de.dude.timetracker.App</mainClass>
-						</configuration>
-					</execution>
+				<executions>
 					<execution>
 						<id>debug</id>
 						<configuration>
-							<mainClass>de.dude.timetracker.App</mainClass>
 							<options>
-								<option>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8000</option>
+								<option>-agentlib:jdwp=transport=dt_socket,server=n,address=localhost:8000,suspend=y</option>
 							</options>
 						</configuration>
 					</execution>
-				</executions>-->
+				</executions>
+				<!--				<configuration>
+									<release>${java.version}</release>
+									<launcher>launcher</launcher>
+									<mainClass>de.dude.timetracker.App</mainClass>
+									&lt;!&ndash;NEEDED FOR MODULARITY
+									<includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
+									<jlinkImageName>ExcelAnalyser</jlinkImageName>
+									<mainClass>de.dude.ExcelAnalyser/de.dude.timetracker.App</mainClass>&ndash;&gt;
+								</configuration>-->
 			</plugin>
 			<plugin>
 				<groupId>org.jetbrains.kotlin</groupId>
@@ -111,21 +106,24 @@
 						<goals>
 							<goal>kapt</goal>
 						</goals>
+						<phase>process-sources</phase>
 						<configuration>
 							<sourceDirs>
 								<sourceDir>src/main/kotlin</sourceDir>
 							</sourceDirs>
-							<annotationProcessorPaths>
-								<!-- Specify your annotation processors here. -->
-							</annotationProcessorPaths>
 						</configuration>
 					</execution>
 					<execution>
 						<id>compile</id>
-						<!--<phase>process-sources</phase>-->
+						<phase>compile</phase>
 						<goals>
 							<goal>compile</goal>
 						</goals>
+						<configuration>
+							<sourceDirs>
+								<sourceDir>src/main/kotlin</sourceDir>
+							</sourceDirs>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

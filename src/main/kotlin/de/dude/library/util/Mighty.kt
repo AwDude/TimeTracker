@@ -1,19 +1,19 @@
-package de.dude.library.util.dirty
+package de.dude.library.util
 
 import sun.misc.Unsafe
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
-class Dirty private constructor(private val obj: Any?, val clazz: Class<*>) {
+class Mighty private constructor(private val obj: Any?, val clazz: Class<*>) {
 
     companion object {
-        private val unsafe by lazy { obtainUnsafe() }
+        val unsafe by lazy { obtainUnsafe() }
 
-        fun ofClass(clazz: Class<*>) = Dirty(null, clazz)
+        fun ofClass(clazz: Class<*>) = Mighty(null, clazz)
 
-        fun ofClass(className: String) = Dirty(null, Class.forName(className))
+        fun ofClass(className: String) = Mighty(null, Class.forName(className))
 
-        fun ofObject(obj: Any) = Dirty(obj, obj::class.java)
+        fun ofObject(obj: Any) = Mighty(obj, obj::class.java)
 
         private fun obtainUnsafe(): Unsafe {
             val field = Unsafe::class.java.getDeclaredField("theUnsafe")
@@ -24,9 +24,29 @@ class Dirty private constructor(private val obj: Any?, val clazz: Class<*>) {
         }
     }
 
+    inline fun <reified T> get(fieldName: String): T? {
+        return get(fieldName, T::class.java)
+    }
 
-    fun get(fieldName: String): Any? {
-        val field = clazz.getDeclaredField(fieldName)
+    fun <T> get(fieldName: String, type: Class<T>): T? {
+        var clazz: Class<*>? = this.clazz
+        do {
+            val field = tryDo { clazz!!.getDeclaredField(fieldName) }
+            if (field != null && isAssignable(field, type)) {
+                @Suppress("UNCHECKED_CAST")
+                return get(field) as T?
+            }
+            clazz = clazz!!.superclass
+        } while (clazz != null)
+        throw NoSuchFieldException("No field \"$fieldName\" of type \"${type.name}\" in class \"${this.clazz.name}\"")
+    }
+
+    private fun isAssignable(field: Field, type: Class<*>): Boolean {
+        val fieldType = if (field.type.isPrimitive) field.type.kotlin.javaObjectType else field.type
+        return type.isAssignableFrom(fieldType)
+    }
+
+    fun get(field: Field): Any? {
         val wasAccessible = field.canAccess(obj)
         field.isAccessible = true
         val value = field.get(obj)
