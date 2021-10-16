@@ -1,13 +1,18 @@
 package de.dude.library.util
 
 import sun.misc.Unsafe
+import java.lang.reflect.AccessibleObject
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
+import kotlin.reflect.KClass
+import kotlin.reflect.full.NoSuchPropertyException
 
 class Mighty private constructor(private val obj: Any?, val clazz: Class<*>) {
 
     companion object {
         val unsafe by lazy { obtainUnsafe() }
+
+        fun ofClass(clazz: KClass<*>) = Mighty(null, clazz.java)
 
         fun ofClass(clazz: Class<*>) = Mighty(null, clazz)
 
@@ -18,41 +23,21 @@ class Mighty private constructor(private val obj: Any?, val clazz: Class<*>) {
         private fun obtainUnsafe(): Unsafe {
             val field = Unsafe::class.java.getDeclaredField("theUnsafe")
             field.isAccessible = true
-            val unsafe = field[null] as Unsafe
-            field.isAccessible = false
-            return unsafe
+            return field[null] as Unsafe
         }
     }
 
-    inline fun <reified T> get(fieldName: String): T? {
-        return get(fieldName, T::class.java)
+    @JvmName("invokeUntyped")
+    fun invoke(methodName: String, vararg parameters: Any?): Any? {
+        val types = parameters.map { it?.let{it::class.java} ?: Any::class.java }.toTypedArray()
+        return findNested { getDeclaredMethod(methodName, *types) }.invoke(obj, *parameters)
     }
 
-    fun <T> get(fieldName: String, type: Class<T>): T? {
-        var clazz: Class<*>? = this.clazz
-        do {
-            val field = tryDo { clazz!!.getDeclaredField(fieldName) }
-            if (field != null && isAssignable(field, type)) {
-                @Suppress("UNCHECKED_CAST")
-                return get(field) as T?
-            }
-            clazz = clazz!!.superclass
-        } while (clazz != null)
-        throw NoSuchFieldException("No field \"$fieldName\" of type \"${type.name}\" in class \"${this.clazz.name}\"")
-    }
+    @Suppress("UNCHECKED_CAST")
+    fun <T> invoke(methodName: String, vararg parameters: Any?) = invoke(methodName, *parameters) as T
 
-    private fun isAssignable(field: Field, type: Class<*>): Boolean {
-        val fieldType = if (field.type.isPrimitive) field.type.kotlin.javaObjectType else field.type
-        return type.isAssignableFrom(fieldType)
-    }
-
-    fun get(field: Field): Any? {
-        val wasAccessible = field.canAccess(obj)
-        field.isAccessible = true
-        val value = field.get(obj)
-        field.isAccessible = wasAccessible
-        return value
-    }
+    @Suppress("UNCHECKED_CAST")
+    fun <T> get(fieldName: String) = findNested { getDeclaredField(fieldName) }.get(obj) as T
 
     fun set(fieldName: String, value: Any?) {
         val field = clazz.getDeclaredField(fieldName)
@@ -65,15 +50,21 @@ class Mighty private constructor(private val obj: Any?, val clazz: Class<*>) {
 
         if (!(isFinal || clazz.isHidden || clazz.isRecord)) {
             try {
-                val wasAccessible = field.canAccess(obj)
                 field.isAccessible = true
                 field.set(obj, value)
-                field.isAccessible = wasAccessible
                 return
             } catch (_: Exception) {
             }
         }
         setDirty(field, value)
+    }
+
+    private fun <T : AccessibleObject> findNested(query: Class<*>.() -> T) =
+        findNested(clazz, query) ?: throw NoSuchPropertyException()
+
+    private fun <T : AccessibleObject> findNested(clazz: Class<*>, query: Class<*>.() -> T): T? {
+        return tryDo { clazz.query().apply { isAccessible = true } }
+            ?: clazz.superclass?.let { findNested(it, query) }
     }
 
     private fun setDirty(field: Field, value: Any?) {

@@ -23,7 +23,6 @@ class MMF {
         log("text bytes = ${text.size}")
 
 
-
         buffer.put(SIZE - text.size, text)
         log("wrote bytes")
         move(text.size, SIZE - text.size, 0)
@@ -52,6 +51,6 @@ class MMF {
         it.channel.map(FileChannel.MapMode.READ_WRITE, position, size)
     }
 
-    private fun getBufferAddress() = Mighty.ofObject(buffer).get<Long>("address")!!
+    private fun getBufferAddress() = Mighty.ofObject(buffer).get<Long>("address")
 
 }

@@ -2,7 +2,8 @@ package de.dude.timetracker
 
 import de.dude.library.javafx.CleanApp
 import de.dude.library.javafx.view.CleanStage
-import de.dude.library.repository.database.Entity
+import de.dude.library.repository.database.entity.Car
+import de.dude.library.repository.database.entity.Truck
 import de.dude.timetracker.controller.MainController
 import de.dude.timetracker.repository.Defaults
 import javafx.application.Platform
@@ -10,8 +11,8 @@ import javafx.application.Platform
 class App : CleanApp() {
 
     override fun onStageCreated(stage: CleanStage) {
-        Entity()
-        //MMF()
+        Car()
+        Truck()
         Platform.exit()
         return
         stage.apply {
