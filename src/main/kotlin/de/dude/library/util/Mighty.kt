@@ -36,8 +36,7 @@ class Mighty private constructor(private val obj: Any?, val clazz: Class<*>) {
     @Suppress("UNCHECKED_CAST")
     fun <T> invoke(methodName: String, vararg parameters: Any?) = invoke(methodName, *parameters) as T
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T> get(fieldName: String) = findNested { getDeclaredField(fieldName) }.get(obj) as T
+    fun <T> get(fieldName: String) = findNested { getDeclaredField(fieldName) }.getAs<T>(obj)
 
     fun set(fieldName: String, value: Any?) {
         val field = clazz.getDeclaredField(fieldName)

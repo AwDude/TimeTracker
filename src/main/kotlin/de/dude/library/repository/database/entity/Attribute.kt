@@ -8,17 +8,13 @@ interface Attribute<T> {
     operator fun setValue(entity: Entity, property: KProperty<*>, value: T)
 }
 
-interface NullableAttribute<T> {
-    operator fun getValue(entity: Entity, property: KProperty<*>): T?
-    operator fun setValue(entity: Entity, property: KProperty<*>, value: T?)
-}
-
 internal object BoolAttribute : Attribute<Boolean> {
     override operator fun getValue(entity: Entity, property: KProperty<*>): Boolean {
         return false
     }
 
     override operator fun setValue(entity: Entity, property: KProperty<*>, value: Boolean) {
+
     }
 }
 

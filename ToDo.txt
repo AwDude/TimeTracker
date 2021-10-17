@@ -2,3 +2,10 @@
 - fix icon and textIcon
 - better app/stage/navigation structure
 - onExit (or Actions in general) not getting called
+
+Database
+- heap
+- references
+- synchronize
+- config
+    - allocated free space

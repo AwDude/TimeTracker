@@ -15,7 +15,7 @@ object Mapper {
     private val entityMaps = hashMapOf<KClass<out Entity>, EntityMap?>()
     private val attributeOffsets = hashMapOf<KProperty<*>, Int>()
 
-    fun add(entity: Entity): Int {
+    fun add(entity: Entity): Long {
         getEntityMap(entity::class)?.apply {
             // find free space -> return id
         }
@@ -51,16 +51,17 @@ object Mapper {
 
     private val KProperty1<out Entity, *>.numBytes: Byte
         get() = when (returnType.classifier) {
-            Boolean::class -> 1
-            Byte::class -> 1
-            Char::class -> 2
-            Short::class -> 2
-            Int::class -> 4
-            Float::class -> 4
-            Long::class -> 8
-            Double::class -> 8
-            String::class -> 8
-            Entity::class -> 8
+            Boolean::class -> Boolean.numBytes
+            Byte::class -> Byte.numBytes
+            Char::class -> Char.numBytes
+            Short::class -> Short.numBytes
+            Int::class -> Int.numBytes
+            Float::class -> Float.numBytes
+            Long::class -> Long.numBytes
+            Double::class -> Double.numBytes
+            String::class -> Byte.Companion.numBytes
+            Entity::class -> Byte.Companion.numBytes
             else -> 0
         }
+
 }

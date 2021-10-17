@@ -2,8 +2,7 @@ package de.dude.timetracker
 
 import de.dude.library.javafx.CleanApp
 import de.dude.library.javafx.view.CleanStage
-import de.dude.library.repository.database.entity.Car
-import de.dude.library.repository.database.entity.Truck
+import de.dude.library.repository.database.MemoryMap
 import de.dude.timetracker.controller.MainController
 import de.dude.timetracker.repository.Defaults
 import javafx.application.Platform
@@ -11,8 +10,10 @@ import javafx.application.Platform
 class App : CleanApp() {
 
     override fun onStageCreated(stage: CleanStage) {
-        Car()
-        Truck()
+
+        val map = MemoryMap("test.txt")
+        map.putChar(0, '+')
+
         Platform.exit()
         return
         stage.apply {

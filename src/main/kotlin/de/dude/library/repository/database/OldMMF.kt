@@ -53,4 +53,14 @@ class MMF {
 
     private fun getBufferAddress() = Mighty.ofObject(buffer).get<Long>("address")
 
+
+    private fun test2() {
+        val mightyBuffer = Mighty.ofObject(buffer)
+        val absoluteBufferAddress = mightyBuffer.get<Long>("address")
+
+        // val charAddress = absoluteBufferAddress + i
+        // putChar(charAddress, x)
+        buffer::class.java.getDeclaredMethod("putChar", Long::class.java, Char::class.java)
+    }
+
 }
