@@ -26,8 +26,11 @@ internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAUL
         mapMemory(size + bufferSize)
     }
 
-    fun putChar(address: Long, char: Char) =
-        unsafe.putCharUnaligned(null, address.absolute.checkRange(Char.numBytes), char)
+    fun putChar(address: Long, char: Char) = unsafe.putCharUnaligned(null, address.checkSize(Char.numBytes), char)
+    fun getChar(address: Long) = unsafe.getCharUnaligned(null, address.checkSize(Char.numBytes))
+
+    fun putInt(address: Long, int: Int) = unsafe.putIntUnaligned(null, address.checkSize(Int.numBytes), int)
+    fun getInt(address: Long) = unsafe.getIntUnaligned(null, address.checkSize(Int.numBytes))
 
     private fun mapMemory(capacity: Long) {
         unmap()
@@ -40,14 +43,20 @@ internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAUL
     }
 
     private fun move(numBytes: Long, from: Long, to: Long) {
-        unsafe.copyMemory(from.absolute, to.absolute, numBytes)
+        unsafe.copyMemory(from.checkSize(numBytes), to.checkSize(numBytes), numBytes)
     }
 
-    private val Long.absolute get() = baseAddress + this
+    private fun Long.checkSize(size: Byte) = checkSize(size.toLong())
 
-    private fun Long.checkRange(size: Byte) = this.also { address ->
-        if (address < 0 || address + size >= baseAddress + capacity) throw IllegalArgumentException("Invalid address or size led")
+    private fun Long.checkSize(size: Long) = this.absolute.also {
+        if (this + size >= capacity) throw IllegalArgumentException("Required size is larger than the capacity")
     }
+
+    private val Long.absolute: Long
+        get() {
+            if (this < 0) throw IllegalArgumentException("Provided relative address is negative")
+            return (baseAddress + this).also { if (it < 0) throw IllegalArgumentException("Address overflow") }
+        }
 
     private fun unmap() = unmapper?.let { Reflects.unmapper_unmap.invoke(it) }
 
