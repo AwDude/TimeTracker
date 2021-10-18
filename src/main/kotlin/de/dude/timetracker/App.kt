@@ -11,8 +11,8 @@ class App : CleanApp() {
 
     override fun onStageCreated(stage: CleanStage) {
 
-        val map = MemoryMap("test.txt")
-        map.putChar(0, '+')
+        val map = MemoryMap("test.txt", 4)
+        //map.putChar(0, '+')
 
         Platform.exit()
         return

@@ -26,11 +26,31 @@ internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAUL
         mapMemory(size + bufferSize)
     }
 
-    fun putChar(address: Long, char: Char) = unsafe.putCharUnaligned(null, address.checkSize(Char.numBytes), char)
-    fun getChar(address: Long) = unsafe.getCharUnaligned(null, address.checkSize(Char.numBytes))
+    fun putBool(address: Long, bool: Boolean) = putByte(address, if (bool) 1 else 0)
+    fun getBool(address: Long) = getByte(address) == 1.toByte()
 
-    fun putInt(address: Long, int: Int) = unsafe.putIntUnaligned(null, address.checkSize(Int.numBytes), int)
-    fun getInt(address: Long) = unsafe.getIntUnaligned(null, address.checkSize(Int.numBytes))
+    fun putByte(address: Long, byte: Byte) = unsafe.putByte(null, address.checkSize(1), byte)
+    fun getByte(address: Long) = unsafe.getByte(null, address.checkSize(1))
+
+    fun putChar(address: Long, char: Char) = unsafe.putCharUnaligned(null, address.checkSize(2), char)
+    fun getChar(address: Long) = unsafe.getCharUnaligned(null, address.checkSize(2))
+
+    fun putShort(address: Long, short: Short) = unsafe.putShortUnaligned(null, address.checkSize(2), short)
+    fun getShort(address: Long) = unsafe.getShortUnaligned(null, address.checkSize(2))
+
+    fun putInt(address: Long, int: Int) = unsafe.putIntUnaligned(null, address.checkSize(4), int)
+    fun getInt(address: Long) = unsafe.getIntUnaligned(null, address.checkSize(4))
+
+    fun putFloat(address: Long, float: Float) = putInt(address, float.toRawBits())
+    fun getFloat(address: Long) = Float.fromBits(getInt(address))
+
+    fun putLong(address: Long, long: Long) = unsafe.putLongUnaligned(null, address.checkSize(8), long)
+    fun getLong(address: Long) = unsafe.getLongUnaligned(null, address.checkSize(8))
+
+    fun putDouble(address: Long, double: Double) = putLong(address, double.toRawBits())
+    fun getDouble(address: Long) = Double.fromBits(getLong(address))
+
+    // TODO put/get ByteArray
 
     private fun mapMemory(capacity: Long) {
         unmap()
@@ -46,10 +66,14 @@ internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAUL
         unsafe.copyMemory(from.checkSize(numBytes), to.checkSize(numBytes), numBytes)
     }
 
-    private fun Long.checkSize(size: Byte) = checkSize(size.toLong())
-
-    private fun Long.checkSize(size: Long) = this.absolute.also {
-        if (this + size >= capacity) throw IllegalArgumentException("Required size is larger than the capacity")
+    private fun Long.checkSize(valueSize: Long) = this.absolute.also { address ->
+        val targetSize = address + valueSize
+        if (targetSize > size) {
+            size = targetSize
+            if (targetSize > capacity) {
+                mapMemory(targetSize + bufferSize)
+            }
+        }
     }
 
     private val Long.absolute: Long
@@ -58,26 +82,39 @@ internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAUL
             return (baseAddress + this).also { if (it < 0) throw IllegalArgumentException("Address overflow") }
         }
 
-    private fun unmap() = unmapper?.let { Reflects.unmapper_unmap.invoke(it) }
+    private fun unmap() = unmapper?.let {
+        // Reflects.unmapper_unmap.invoke(it)
+        unmapper = null
+        // TODO
+        // channel_unmapMemory
+        // MappedMemoryUtils.force
+        // MappedMemoryUtils.unload
+        Reflects.channel_unmapMemory.invoke(channel, baseAddress, capacity)
+    }
 
     override fun close() {
         unmap()
         channel.truncate(size)
         channel.close()
     }
+
 }
 
 private object Reflects {
+
     val channel_mapMemory: Method
+    val channel_unmapMemory: Method
     val unmapper_unmap: Method
     val unmapper_address: Field
     val unmapper_pagePosition: Field
 
     init {
-
         val channelClass = Class.forName("sun.nio.ch.FileChannelImpl")
         channel_mapMemory = channelClass.getDeclaredMethod(
             "mapInternal", FileChannel.MapMode::class.java, Long::class.java, Long::class.java
+        ).apply { isAccessible = true }
+        channel_unmapMemory = channelClass.getDeclaredMethod(
+            "unmap0", Long::class.java, Long::class.java
         ).apply { isAccessible = true }
 
         val unmapperClass = Class.forName("sun.nio.ch.FileChannelImpl\$Unmapper")
@@ -97,13 +134,5 @@ private object Reflects {
             return getObject(unsafeBase, unsafeOffset) as Unsafe
         }
     }
-}
 
-internal val Boolean.Companion.numBytes: Byte get() = 1
-internal val Byte.Companion.numBytes: Byte get() = 1
-internal val Char.Companion.numBytes: Byte get() = 2
-internal val Short.Companion.numBytes: Byte get() = 2
-internal val Int.Companion.numBytes: Byte get() = 4
-internal val Float.Companion.numBytes: Byte get() = 4
-internal val Long.Companion.numBytes: Byte get() = 8
-internal val Double.Companion.numBytes: Byte get() = 8
+}
