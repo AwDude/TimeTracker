@@ -2,25 +2,21 @@
 
 package de.dude.library.repository.database
 
-import de.dude.library.util.getAs
 import jdk.internal.misc.Unsafe
-import java.lang.reflect.Field
-import java.lang.reflect.Method
 import java.nio.channels.FileChannel
-import java.nio.channels.FileChannel.MapMode.READ_WRITE
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption.*
 
 private const val DEFAULT_BUFFER_SIZE = 1024L * 1024L
 
-internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAULT_BUFFER_SIZE) : AutoCloseable {
+internal class MemoryMappedFile(fileName: String, private val bufferSize: Long = DEFAULT_BUFFER_SIZE) : AutoCloseable {
 
-    private val unsafe = Reflects.getUnsafe()
+    private val unsafe = obtainUnsafe()
     private val channel = FileChannel.open(Path.of(fileName), CREATE, WRITE, READ)
     private var size = channel.size()
     private var capacity = 0L
     private var baseAddress = -1L
-    private var unmapper: Any? = null
+    private var memoryMapping: MemoryMapping? = null
 
     init {
         mapMemory(size + bufferSize)
@@ -56,10 +52,9 @@ internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAUL
         unmap()
         if (capacity <= 0) throw IllegalArgumentException("Invalid capacity: $capacity")
         this.capacity = capacity
-        unmapper = Reflects.channel_mapMemory.invoke(channel, READ_WRITE, 0L, capacity)
-        val address = Reflects.unmapper_address.getAs<Long>(unmapper)
-        val pagePosition = Reflects.unmapper_pagePosition.getAs<Int>(unmapper)
-        baseAddress = address + pagePosition
+        memoryMapping = MemoryMapping(channel, capacity).also {
+            baseAddress = it.baseAddress
+        }
     }
 
     private fun move(numBytes: Long, from: Long, to: Long) {
@@ -82,14 +77,10 @@ internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAUL
             return (baseAddress + this).also { if (it < 0) throw IllegalArgumentException("Address overflow") }
         }
 
-    private fun unmap() = unmapper?.let {
-        // Reflects.unmapper_unmap.invoke(it)
-        unmapper = null
-        // TODO
-        // channel_unmapMemory
-        // MappedMemoryUtils.force
-        // MappedMemoryUtils.unload
-        Reflects.channel_unmapMemory.invoke(channel, baseAddress, capacity)
+    private fun unmap() = memoryMapping?.run {
+        flush()
+        unmap()
+        memoryMapping = null
     }
 
     override fun close() {
@@ -98,32 +89,7 @@ internal class MemoryMap(fileName: String, private val bufferSize: Long = DEFAUL
         channel.close()
     }
 
-}
-
-private object Reflects {
-
-    val channel_mapMemory: Method
-    val channel_unmapMemory: Method
-    val unmapper_unmap: Method
-    val unmapper_address: Field
-    val unmapper_pagePosition: Field
-
-    init {
-        val channelClass = Class.forName("sun.nio.ch.FileChannelImpl")
-        channel_mapMemory = channelClass.getDeclaredMethod(
-            "mapInternal", FileChannel.MapMode::class.java, Long::class.java, Long::class.java
-        ).apply { isAccessible = true }
-        channel_unmapMemory = channelClass.getDeclaredMethod(
-            "unmap0", Long::class.java, Long::class.java
-        ).apply { isAccessible = true }
-
-        val unmapperClass = Class.forName("sun.nio.ch.FileChannelImpl\$Unmapper")
-        unmapper_address = unmapperClass.getDeclaredField("address").apply { isAccessible = true }
-        unmapper_pagePosition = unmapperClass.getDeclaredField("pagePosition").apply { isAccessible = true }
-        unmapper_unmap = unmapperClass.getDeclaredMethod("unmap").apply { isAccessible = true }
-    }
-
-    fun getUnsafe(): Unsafe {
+    private fun obtainUnsafe(): Unsafe {
         val outerUnsafeClass = sun.misc.Unsafe::class.java
         val outerUnsafeField = outerUnsafeClass.getDeclaredField("theUnsafe").apply { isAccessible = true }
         val outerUnsafe = outerUnsafeField[null] as sun.misc.Unsafe

@@ -88,6 +88,7 @@
 						<configuration>
 							<options>
 								<option>-agentlib:jdwp=transport=dt_socket,server=n,address=localhost:8000,suspend=y</option>
+								<option>--add-exports java.base/jdk.internal.misc=ALL-UNNAMED</option>
 							</options>
 						</configuration>
 					</execution>
