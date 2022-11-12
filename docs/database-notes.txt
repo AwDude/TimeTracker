@@ -1,0 +1,65 @@
+--- OLD ---
+Directory
+- folder with db name
+	- tableName.table
+	- dynamic.data
+	
+Table Files
+- store metadata on top
+	- tableId: long
+	- version: long
+- store static sized data afterwards
+	- map only this part of the file for IO
+	- for arrays / strings, only the dynamic.data addr is stored
+	- for table references, only the record addr is stored
+	- recordId = (start addr / record size) - metadata size
+--- --- ---
+
+Data Store
+- use one file for everything
+    - indices
+        - types
+            - values: B+ tree
+                - of which Order?
+                - use Bucket size of Page size (4kb) to increase performance?
+            - datatype index: HashMap with Buckets
+                - store info
+                - when to resize? (load factor)
+        - consider max record length!
+    - fixed size data
+    - variable size data
+    - info about free space
+    - info about data (class)
+- each record consists of (numBytes: Short, data:Byte[])
+    - first bit of numBytes indicates whether block continues or not
+    - if bit is set, the last 8 Bytes are the addr of next block
+- free spaces are stored in a B+ tree without next pointers
+    - tree ordered by number of free bytes
+    - also needs read/write locks
+        - but lock can be released immediately after finding empty space
+        - we can busy wait for the locks to happen
+
+Transactions
+- acquire read/write locks for every mmf access
+    - if one lock fails
+        - restart transaction
+        - each restart increases a waiting time until it is restarted
+    - locks are released after everything was written to mmf
+    - only one read lock possible per JVM
+        - need concurrent hashmap with readlock counter for internal synchronization
+            - if lock exists, increment counter
+            - AND create read lock for the non-locked addr
+- writes are not directly written
+    - writes are stored in a transaction-local HashMap (Addr -> Byte)
+        - reads have to check that map
+            - if in there, take that data
+            - else read from mmf
+- when transaction statements are processed
+    - do for every map entry: read mmf on that addr and append to log message (Addr : Byte)
+    - write log message to transaction log with nanotime
+        - time needed because multiple process can have multiple log files
+    - do for every map entry: write map value to that addr in mmf
+    - release all locks
+        - for read locks decrement counter. if counter = 0, release read lock
+- Transaction Log File
+    - When everything is read

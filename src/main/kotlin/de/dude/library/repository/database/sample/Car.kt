@@ -1,4 +1,9 @@
-package de.dude.library.repository.database.entity
+package de.dude.library.repository.database.sample
+
+import de.dude.library.repository.database.entity.Entity
+import de.dude.library.repository.database.entity.bool
+import de.dude.library.repository.database.entity.int
+import de.dude.library.repository.database.entity.nullableBool
 
 open class Car: Entity() {
     var b by bool

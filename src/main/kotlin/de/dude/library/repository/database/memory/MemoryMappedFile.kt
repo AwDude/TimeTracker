@@ -1,6 +1,6 @@
 @file:Suppress("JAVA_MODULE_DOES_NOT_EXPORT_PACKAGE")
 
-package de.dude.library.repository.database
+package de.dude.library.repository.database.memory
 
 import jdk.internal.misc.Unsafe
 import java.nio.channels.FileChannel

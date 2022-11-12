@@ -1,4 +1,4 @@
-package de.dude.library.repository.database
+package de.dude.library.repository.database.memory
 
 import de.dude.library.util.getAs
 import java.lang.reflect.Field

@@ -1,6 +1,6 @@
 package de.dude.library.repository.database.entity
 
-import de.dude.library.repository.database.MemoryMappedFile
+import de.dude.library.repository.database.memory.MemoryMappedFile
 
 private const val ENTITY_FILE_EXTENSION = ".entity"
 

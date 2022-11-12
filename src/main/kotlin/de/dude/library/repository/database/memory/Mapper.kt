@@ -1,10 +1,11 @@
-package de.dude.library.repository.database
+package de.dude.library.repository.database.memory
 
 import de.dude.library.repository.database.entity.Attribute
 import de.dude.library.repository.database.entity.Entity
 import de.dude.library.repository.database.entity.EntityMap
 import de.dude.library.util.isDelegate
 import kotlin.reflect.KClass
+import kotlin.reflect.KClassifier
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
@@ -22,9 +23,9 @@ object Mapper {
         return -1
     }
 
-/*    fun writeFixedAttribute(entity: Entity, attribute: KProperty<*>, value:) {
+    /*    fun writeFixedAttribute(entity: Entity, attribute: KProperty<*>, value:) {
 
-    }*/
+        }*/
 
     private fun getEntityMap(entityClass: KClass<out Entity>) = entityMaps[entityClass] ?: createEntityMap(entityClass)
 
@@ -50,7 +51,10 @@ object Mapper {
     }
 
     private val KProperty1<out Entity, *>.numBytes: Byte
-        get() = when (returnType.classifier) {
+        get() = returnType.classifier.numBytes
+
+    private val KClassifier?.numBytes: Byte
+        get() = when (this) {
             Long::class -> 8
             String::class -> 8
             Entity::class -> 8

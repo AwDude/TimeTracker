@@ -1,4 +1,4 @@
-package de.dude.library.repository.database.entity
+package de.dude.library.repository.database.memory
 
 import de.dude.library.util.Mighty
 import java.io.Closeable
